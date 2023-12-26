@@ -102,6 +102,7 @@ const Registration = () => {
 				<div>
 					<label htmlFor='username'>Username</label>
 					<input
+						aria-invalid={errors.username ? "true" : "false"}
 						type='text'
 						placeholder='username'
 						{...register("username", { required: "Please enter a username." })}
@@ -111,6 +112,7 @@ const Registration = () => {
 				<div>
 					<label htmlFor='email'>E-Mail</label>
 					<input
+						aria-invalid={errors.email ? "true" : "false"}
 						type='email'
 						placeholder='you@mail.com'
 						{...register("email", {
@@ -129,6 +131,7 @@ const Registration = () => {
 				<div>
 					<label htmlFor='dob'>Date of Birth</label>
 					<input
+						aria-invalid={errors.dob ? "true" : "false"}
 						type='text'
 						placeholder='date of birth'
 						{...register("dob", {
@@ -152,6 +155,7 @@ const Registration = () => {
 								{option.label}
 							</label>
 							<input
+								aria-invalid={errors.locality ? "true" : "false"}
 								type='radio'
 								{...register("locality", {
 									required: "Please select a locality.",
@@ -191,6 +195,7 @@ const Registration = () => {
 				<div>
 					<label htmlFor='password'>Password</label>
 					<input
+						aria-invalid={errors.publicity ? "true" : "false"}
 						type='password'
 						placeholder='password'
 						{...register("password", {
@@ -219,6 +224,7 @@ const Registration = () => {
 				<div>
 					<label htmlFor='terms'>I accept the terms and conditions.</label>
 					<input
+						aria-invalid={errors.terms ? "true" : "false"}
 						type='radio'
 						{...register("terms", {
 							required: "Please accept the terms and conditions.",

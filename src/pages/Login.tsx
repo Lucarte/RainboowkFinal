@@ -1,5 +1,8 @@
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
+import { AuthContext } from "../context/AuthProvider";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type FormValues = {
 	email: string;
@@ -7,6 +10,10 @@ type FormValues = {
 };
 
 const Login = () => {
+	const { auth, setAuth } = useContext(AuthContext);
+	const navigate = useNavigate();
+	const { state } = useLocation();
+
 	const form = useForm<FormValues>();
 	const {
 		register,
@@ -15,12 +22,51 @@ const Login = () => {
 		formState: { errors, isSubmitting },
 	} = form;
 
+	console.log(auth);
+
+	// Wenn Nutzer von einer Private Route kam
+	// dann wollen wir dahin nach Login zurück
+	// Wenn er direkt auf Login klickte, schicken wir
+	// den Nutzer an die Homepage
+
+	// if our 'from' state is empty, then we take the user home
+	const { from = "/" } = state || {};
+
+	const login = {
+		id: 1,
+		username: "user1",
+		email: "asd@asd.de",
+		password: "Password?1",
+		role: "user",
+	};
+
 	// Takes place when all fields filled correctly
-	const onSubmit = async () => {
+	const onSubmit = async (data: FormValues) => {
 		// Logic for the login
 		await new Promise((resolve) => setTimeout(resolve, 3000));
 		console.log("Formular Submit");
+		if (data.email === login.email && data.password === login.password) {
+			setAuth((prevAuth) => {
+				let role = null;
+				if (login.role === "admin") {
+					role = login.role as "admin";
+				}
+				if (login.role === "user") {
+					role = login.role as "user";
+				}
+
+				return {
+					...prevAuth,
+					id: login.id,
+					username: login.username,
+					role: role,
+				};
+			});
+			navigate(from);
+		}
 	};
+	// // Muss an unerwarteter Fehler sein
+	// throw new Error("Fehler !!! Login Falsch !!!");
 
 	// // It has to be an unexpected error
 	// throw new Error();
