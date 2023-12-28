@@ -3,18 +3,19 @@ import { Outlet, Navigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
 
 type Props = {
-	role: "admin" | "user";
+	isAdmin: boolean;
 };
 
-const ProtectedLayout = ({ role }: Props) => {
+const ProtectedLayout = ({ isAdmin }: Props) => {
 	const { auth } = useContext(AuthContext);
 	const location = useLocation();
 
-	return auth.role === role ? (
+	return auth.isAdmin ? (
 		<Outlet />
 	) : (
 		<>
-			<Navigate to={"/unauthorized"} state={{ from: location }} replace />
+			<Navigate to={"/login"} state={{ from: location }} replace />
+			{/* <Navigate to={"/unauthorized"} state={{ from: location }} replace /> */}
 		</>
 	);
 };

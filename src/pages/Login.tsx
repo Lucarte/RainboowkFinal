@@ -15,6 +15,8 @@ const Login = () => {
 	const navigate = useNavigate();
 	const { state } = useLocation();
 
+	// console.log(auth);
+
 	const form = useForm<FormValues>();
 	const {
 		register,
@@ -34,46 +36,27 @@ const Login = () => {
 
 	// Takes place when all fields validated
 	const onSubmit = async (data: FormValues) => {
-		// Logic for the login
 		try {
 			await http.get("/sanctum/csrf-cookie");
 			const response = await http.post("api/auth/login", data);
 			const userData = response.data;
 
-			setAuth({ ...userData, role: userData.role ?? "user" });
+			setAuth({ ...userData, isAdmin: userData.isAdmin ?? false });
+			console.log("Formular Submitted", auth);
 			navigate(from);
-
-			// // // Philips version
-			// const role = ["user", "admin"].includes(userData.role)
-			// 	? userData.role
-			// 	: null;
-
-			// // // Toms version
-			// // let role = null;
-
-			// // if(login.role === 'admin'){
-			// // 	role = userData.role as 'admin';
-			// // }
-			// // if (login.role === 'user'){
-			// // 	role = userData.role as 'user';
-			// // }
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (exception: any) {
 			const errors = exception.response.data.errors;
 
 			for (const [fieldName, errorList] of Object.entries(errors)) {
 				type Field = "email" | "password" | "root";
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				const errors = (errorList as any[]).map((message) => ({ message }));
 				console.log(fieldName, errors);
 				setError(fieldName as Field, errors[0]);
 			}
 		}
-		console.log("Formular Submitted");
 	};
-	// // Muss an unerwarteter Fehler sein
-	// throw new Error("Fehler !!! Login Falsch !!!");
-
-	// // It has to be an unexpected error
-	// throw new Error();
 
 	// This shows us when there are errors
 	const onError = () => {
@@ -133,20 +116,6 @@ const Login = () => {
 								/^(?=.*[@$!%*?&])/.test(value) ||
 								"Passwort muss mindestens ein Sonderzeichen enthalten",
 						},
-						// pattern: {
-						// 	value:
-						// 		/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/,
-						// 	message: `Please enter a valid password: ${(<br></br>)}
-						//     -> Min length is 8 characters
-						//     -> 1 special character
-						//     -> 1 number
-						//     -> 1 capital letter
-						//     -> 1 small letter`,
-						// },
-						// minLength: {
-						// 	value: 8,
-						// 	message: "Min length: 8 characters",
-						// },
 					})}
 				/>
 

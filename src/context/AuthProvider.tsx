@@ -8,7 +8,7 @@ type Props = {
 type Auth = {
 	id: number | null;
 	username: string | null;
-	role: "admin" | "user" | null;
+	isAdmin: boolean | null;
 };
 
 type AuthContext = {
@@ -19,7 +19,7 @@ type AuthContext = {
 export const defaultAuth: Auth = {
 	id: null,
 	username: null,
-	role: null,
+	isAdmin: null,
 };
 
 const defaultAuthContext = {
@@ -33,9 +33,8 @@ const AuthProvider = ({ children }: Props) => {
 	// Instead of useState, I could also use localStorage hook from Chapter 4, to prevent a hard reload
 	const [auth, setAuth] = useState<Auth>(defaultAuth);
 
-	if (auth.role === "admin") {
-		// Hier bestimmte protected Logik
-	}
+	// if (auth.isAdmin === true) {
+	// }
 
 	return (
 		<AuthContext.Provider value={{ auth, setAuth }}>

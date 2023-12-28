@@ -7,7 +7,6 @@ import {
 
 // Layouts
 import RootLayout from "./layouts/RootLayout";
-import PrivateLayout from "./layouts/PrivateLayout";
 import ProtectedLayout from "./layouts/ProtectedLayout";
 
 // Errors
@@ -17,30 +16,33 @@ import RootError from "./errors/RootError";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
-import Dashboard from "./pages/Dashboard";
-import Unauthorized from "./pages/Unauthorized";
-import Blog, { blogloader } from "./pages/Blog";
-import Blogpost, { blopostLoader } from "./pages/Blogpost";
+// import Dashboard from "./pages/Dashboard";
+// import Unauthorized from "./pages/Unauthorized";
+// import Blog, { blogloader } from "./pages/Blog";
+// import Blogpost, { blopostLoader } from "./pages/Blogpost";
+import Registration from "./pages/Registration";
+import UsersList from "./pages/UserList";
+import User from "./pages/User";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<>
 			<Route path='/' element={<RootLayout />} errorElement={<RootError />}>
 				<Route index element={<Home />} />
+				<Route path='/registration' element={<Registration />} />
 				// For admin
-				<Route element={<ProtectedLayout role='admin' />}>
-					<Route path='/dashboard' element={<Dashboard />} />
+				<Route element={<ProtectedLayout isAdmin={true} />}>
+					<Route path='/users' element={<UsersList />} />
 				</Route>
-				<Route path='/unauthorized' element={<Unauthorized />} />
 				// For signed users
-				<Route element={<PrivateLayout role='user' />}>
-					<Route path='/profile' element={<Dashboard />} />
+				<Route element={<ProtectedLayout isAdmin={false} />}>
+					<Route path='/user/:username' element={<User />} />
 				</Route>
 				<Route path='/login' element={<Login />} />
-				<Route path='/blog'>
+				{/* <Route path='/blog'>
 					<Route index element={<Blog />} loader={blogloader} />
 					<Route path=':slug' element={<Blogpost />} loader={blopostLoader} />
-				</Route>
+				</Route> */}
 				// If I put it inside the RootLayout there is access to the nav links!
 				<Route path='*' element={<NotFound />} />
 			</Route>

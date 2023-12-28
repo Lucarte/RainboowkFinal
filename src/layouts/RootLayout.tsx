@@ -1,67 +1,49 @@
-import { useContext, useEffect } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext, defaultAuth } from "../context/AuthProvider";
 import http from "../utils/http";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const RootLayout = () => {
 	const { auth, setAuth } = useContext(AuthContext);
+	const [isActive, setIsActive] = useState(false);
 
 	const getInitialAuth = async () => {
 		try {
-			const response = await http.get("api/auth/user");
-			setAuth({ ...response.data, role: "user" });
-		} catch {
-			//
+			console.log("Before API call - auth.username:", auth.username);
+
+			if (auth.username) {
+				const response = await http.get(`api/auth/user/${auth.username}`);
+				setAuth({ ...response.data, isAdmin: false });
+
+				console.log("After API call - auth.username:", auth.username);
+			}
+		} catch (error) {
+			console.error("Error fetching initial auth:", error);
 		}
 	};
 
 	useEffect(() => void getInitialAuth(), []);
 
-	const handleLogout = () => {
-		setAuth(defaultAuth);
-		const handleLogout = async () => {
-			try {
-				await http.post("/api/auth/logout");
-				setAuth(defaultAuth);
-			} catch {
-				//
-			}
-		};
+	const handleLogout = async () => {
+		try {
+			await http.post("/api/auth/logout");
+			setAuth(defaultAuth);
+		} catch {
+			//
+		}
 	};
 
 	return (
 		<>
-			<header>
-				<nav>
-					<ul>
-						<li>
-							<NavLink to='/'>Home</NavLink>
-						</li>
-						<li>
-							<NavLink to='/dashboard'>Dashboard</NavLink>
-						</li>
-						<li>
-							<NavLink to='/profile'>Profile</NavLink>
-						</li>
-						<li>
-							<NavLink to='/blog'>Blog</NavLink>
-						</li>
-					</ul>
-					{auth.id ? (
-						<div>
-							<p>You are logged in as: {auth.username}</p>
-							<button className='text-orange-500' onClick={handleLogout}>
-								Logout
-							</button>
-						</div>
-					) : (
-						<NavLink to='/login'>Login</NavLink>
-					)}
-				</nav>
-			</header>
-			<main>
-				<Outlet />
-			</main>
+			<Header
+				handleLogout={handleLogout}
+				isActive={isActive}
+				setIsActive={setIsActive}
+				onClose={onclose}
+			/>
+			{/* <BookCatalog /> */}
+			<Footer />
 		</>
 	);
 };

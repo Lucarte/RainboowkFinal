@@ -1,34 +1,91 @@
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
+import { AuthContext } from "../context/AuthProvider";
+import { useLocation, useNavigate } from "react-router-dom";
+import http from "../utils/http";
+import { useContext } from "react";
 
 type FormValues = {
-	pronouns: string;
-	salutation: string;
+	pronouns?: string;
+	salutation: "Dear individual" | "Dear person" | "Dear child" | "Mrs." | "Mr";
 	username: string;
 	email: string;
-	dob: Date;
-	locality: string;
-	personRole: string;
-	publicity: string;
+	dob: string;
+	locality: "within Germany" | "outside Germany";
+	personRole:
+		| "author"
+		| "child"
+		| "librarian"
+		| "opposed_to_the_biodiversity"
+		| "publisher_representative"
+		| "activist"
+		| "binary_world_defender"
+		| "journalist"
+		| "curious_person";
+	publicity: "mouthword" | "online_search" | "other";
 	password: string;
-	terms: string;
+	terms: boolean;
 };
 
 const Registration = () => {
+	const { auth, setAuth } = useContext(AuthContext);
+	const navigate = useNavigate();
+	const { state } = useLocation();
 	const form = useForm<FormValues>();
 	const {
 		register,
 		control,
 		handleSubmit,
 		formState: { errors, isSubmitting },
+		setError,
 	} = form;
 
+	// if our 'from' state is empty, then we take the user home
+	const { from = "/" } = state || {};
+
 	// Will take place if all fields are validated
-	const onSubmit = async () => {
-		// Logik für den Login
-		await new Promise((resolve) => setTimeout(resolve, 2000));
-		console.log("Submitted");
-		// fetch AXIOS?
+	const onSubmit = async (data: FormValues) => {
+		try {
+			// Request CSRF token
+			await http.get("/sanctum/csrf-cookie");
+
+			// Make the registration request
+			const response = await http.post("api/auth/register", data);
+
+			// Extract user data from the response
+			const userData = response.data;
+
+			// Update the authentication context
+			setAuth({ ...userData, isAdmin: userData.isAdmin ?? false });
+
+			// Log success and navigate
+			console.log("Registration Successful", auth);
+			navigate(from);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (exception: any) {
+			// Handle registration errors
+			const errors = exception.response.data.errors;
+			console.log(exception.response);
+			for (const [fieldName, errorList] of Object.entries(errors)) {
+				// Define the type for your form fields
+				type Field =
+					| "salutation"
+					| "username"
+					| "email"
+					| "dob"
+					| "locality"
+					| "personRole"
+					| "publicity"
+					| "password"
+					| "terms";
+				// | "root";
+
+				// Map the error messages and set them using setError
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				const errors = (errorList as any[]).map((message) => ({ message }));
+				setError(fieldName as Field, errors[0]);
+			}
+		}
 	};
 
 	// Will take place if there are errors
