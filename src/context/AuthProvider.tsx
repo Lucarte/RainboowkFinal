@@ -30,6 +30,7 @@ const defaultAuthContext = {
 export const AuthContext = createContext<AuthContext>(defaultAuthContext);
 
 const AuthProvider = ({ children }: Props) => {
+	// Instead of useState, I could also use localStorage hook from Chapter 4, to prevent a hard reload
 	const [auth, setAuth] = useState<Auth>(defaultAuth);
 
 	if (auth.role === "admin") {

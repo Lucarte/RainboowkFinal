@@ -19,21 +19,28 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import Unauthorized from "./pages/Unauthorized";
+import Blog, { blogloader } from "./pages/Blog";
+import Blogpost, { blopostLoader } from "./pages/Blogpost";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<>
 			<Route path='/' element={<RootLayout />} errorElement={<RootError />}>
 				<Route index element={<Home />} />
+				// For admin
 				<Route element={<ProtectedLayout role='admin' />}>
 					<Route path='/dashboard' element={<Dashboard />} />
 				</Route>
 				<Route path='/unauthorized' element={<Unauthorized />} />
-				{/* <Route element={<PrivateLayout />}>
-					<Route path='/dashboard' element={<Dashboard />} />
+				// For signed users
+				<Route element={<PrivateLayout role='user' />}>
 					<Route path='/profile' element={<Dashboard />} />
-				</Route> */}
+				</Route>
 				<Route path='/login' element={<Login />} />
+				<Route path='/blog'>
+					<Route index element={<Blog />} loader={blogloader} />
+					<Route path=':slug' element={<Blogpost />} loader={blopostLoader} />
+				</Route>
 				// If I put it inside the RootLayout there is access to the nav links!
 				<Route path='*' element={<NotFound />} />
 			</Route>
