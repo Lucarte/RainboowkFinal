@@ -42,7 +42,6 @@ const Login = () => {
 			const userData = response.data;
 
 			setAuth({ ...userData, isAdmin: userData.isAdmin ?? false });
-			console.log("Formular Submitted", auth);
 			navigate(from);
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (exception: any) {

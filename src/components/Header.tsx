@@ -6,23 +6,27 @@ type Props = {
 	isActive: boolean;
 	setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 	handleLogout: () => void;
-	onClose: () => void;
 };
 
-const Header = ({ isActive, setIsActive, handleLogout, onClose }: Props) => {
+const Header = ({ isActive, setIsActive, handleLogout }: Props) => {
 	return (
 		<>
-			<header className='flex justify-between w-full px-6 py-8 lg:px-8 bg-cyan-400 text-violet-700'>
-				<h1>RAINBOOWK</h1>
+			<header className='flex justify-between w-full px-6 py-8 lg:px-8 bg-cyan-400 border-4 border-indigo-900 text-indigo-900'>
+				<div className='flex gap-1 font-rubik text-4xl font-bold'>
+					<h1 className='pt-1'>RAIN</h1>
+					<h1 className='font-kids2'>BOO</h1>
+					<h1 className='pt-1'>W</h1>
+					<h1 className='font-kids2'>K</h1>
+				</div>
+
 				<Navigation
 					handleLogout={handleLogout}
 					isActive={isActive}
 					setIsActive={setIsActive}
-					onClose={onClose}
 				/>
 			</header>
 			<main>
-				{isActive ? <SpreadMenu onClose={onClose} /> : null}
+				{isActive ? <SpreadMenu setIsActive={setIsActive} /> : null}
 				<Outlet />
 			</main>
 		</>

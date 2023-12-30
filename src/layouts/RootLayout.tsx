@@ -40,7 +40,6 @@ const RootLayout = () => {
 				handleLogout={handleLogout}
 				isActive={isActive}
 				setIsActive={setIsActive}
-				onClose={onclose}
 			/>
 			{/* <BookCatalog /> */}
 			<Footer />
@@ -49,3 +48,6 @@ const RootLayout = () => {
 };
 
 export default RootLayout;
+
+// homeShort credit:
+// Video by Lara Jameson: https://www.pexels.com/video/sky-blue-dark-standing-9363798/

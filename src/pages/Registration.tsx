@@ -24,6 +24,7 @@ type FormValues = {
 		| "curious_person";
 	publicity: "mouthword" | "online_search" | "other";
 	password: string;
+	passwordConfirmation: string;
 	terms: boolean;
 };
 
@@ -77,6 +78,7 @@ const Registration = () => {
 					| "personRole"
 					| "publicity"
 					| "password"
+					| "passwordConfirmation"
 					| "terms";
 				// | "root";
 
@@ -95,7 +97,6 @@ const Registration = () => {
 
 	// Options for my Salutation Select Field
 	const greetOptions = [
-		"Please select...",
 		"Dear Individual",
 		"Dear Person",
 		"Dear Child",
@@ -111,7 +112,6 @@ const Registration = () => {
 
 	// Options for my PersonRole Select Field
 	const roleOptions = [
-		"Please choose",
 		"Author",
 		"Child",
 		"Librarian",
@@ -124,16 +124,14 @@ const Registration = () => {
 	];
 
 	// Options for my Publicity Select Field
-	const publicityOptions = [
-		"Please choose",
-		"Mouthword",
-		"Online Search",
-		"Other",
-	];
+	const publicityOptions = ["Mouthword", "Online Search", "Other"];
 
 	return (
 		<>
-			<form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
+			<form
+				className='flex flex-col gap-5'
+				noValidate
+				onSubmit={handleSubmit(onSubmit, onError)}>
 				<div>
 					<label htmlFor='pronouns'>Pronouns</label>
 					<input
@@ -145,9 +143,17 @@ const Registration = () => {
 				<div>
 					<label htmlFor='salutation'>Salutation</label>
 					<select
+						aria-invalid={errors.salutation ? "true" : "false"}
 						{...register("salutation", {
-							required: "Please select a salutation.",
-						})}>
+							required: {
+								value: true,
+								message: "Please select a salutation.",
+							},
+						})}
+						defaultValue=''>
+						<option disabled value=''>
+							Please select...
+						</option>
 						{greetOptions.map((value) => (
 							<option key={value} value={value}>
 								{value}
@@ -183,8 +189,8 @@ const Registration = () => {
 							},
 						})}
 					/>
+					<p className='text-red-700'>{errors.email?.message}</p>
 				</div>
-				<p className='text-red-700'>{errors.email?.message}</p>
 				<div>
 					<label htmlFor='dob'>Date of Birth</label>
 					<input
@@ -215,7 +221,10 @@ const Registration = () => {
 								aria-invalid={errors.locality ? "true" : "false"}
 								type='radio'
 								{...register("locality", {
-									required: "Please select a locality.",
+									required: {
+										value: true,
+										message: "Please select a locality.",
+									},
 								})}
 								value={option.value}
 							/>
@@ -226,9 +235,17 @@ const Registration = () => {
 				<div>
 					<label htmlFor='personRole'>What is your role here?</label>
 					<select
+						aria-invalid={errors.personRole ? "true" : "false"}
 						{...register("personRole", {
-							required: "Please make a choice.",
-						})}>
+							required: {
+								value: true,
+								message: "Please make a choice.",
+							},
+						})}
+						defaultValue=''>
+						<option disabled value=''>
+							Please select...
+						</option>
 						{roleOptions.map((value) => (
 							<option value={value} key={value}>
 								{value}
@@ -240,19 +257,24 @@ const Registration = () => {
 				<div>
 					<label htmlFor='publicity'>How did you find out about us?</label>
 					<select
+						aria-invalid={errors.publicity ? "true" : "false"}
 						{...register("publicity", {
-							required: "Please make a choice.",
-						})}>
+							required: { value: true, message: "Please make a choice." },
+						})}
+						defaultValue=''>
+						<option disabled value=''>
+							Please select...
+						</option>
 						{publicityOptions.map((value) => (
 							<option value={value}>{value}</option>
 						))}
 					</select>
+					<p className='text-red-700'>{errors.publicity?.message}</p>
 				</div>
-				<p className='text-red-700'>{errors.publicity?.message}</p>
 				<div>
 					<label htmlFor='password'>Password</label>
 					<input
-						aria-invalid={errors.publicity ? "true" : "false"}
+						aria-invalid={errors.password ? "true" : "false"}
 						type='password'
 						placeholder='password'
 						{...register("password", {
@@ -277,6 +299,22 @@ const Registration = () => {
 						})}
 					/>
 					<p className='text-red-700'>{errors.password?.message}</p>
+				</div>
+				<div>
+					<label htmlFor='passwordConfirmation'>Password Confirmation</label>
+					<input
+						aria-invalid={errors.passwordConfirmation ? "true" : "false"}
+						type='password'
+						placeholder='password confirmation'
+						{...register("passwordConfirmation", {
+							required: "Please re-enter your password.",
+							validate: {
+								matchPassword: (value) =>
+									value !== "password" ?? "Passwords do not match.",
+							},
+						})}
+					/>
+					<p className='text-red-700'>{errors.passwordConfirmation?.message}</p>
 				</div>
 				<div>
 					<label htmlFor='terms'>I accept the terms and conditions.</label>

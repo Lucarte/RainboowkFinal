@@ -7,15 +7,9 @@ type Props = {
 	isActive: boolean;
 	setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 	handleLogout: () => void;
-	closeMenu: () => void;
 };
 
-const Navigation = ({
-	isActive,
-	setIsActive,
-	handleLogout,
-	closeMenu,
-}: Props) => {
+const Navigation = ({ isActive, setIsActive, handleLogout }: Props) => {
 	const { auth } = useContext(AuthContext);
 
 	return (
@@ -45,14 +39,16 @@ const Navigation = ({
 				</ul>
 				<button
 					onClick={() => setIsActive((value) => !value)}
-					className='bg-slate-600'>
+					className='bg-cyan-400 flex flex-col gap-2 justify-center items-end'>
 					{/* Hamburger icon lines */}
-					<div className='border-white bg-white h-[.3rem] rounded-sm border-t-2 w-8'></div>
-					<div className='border-white bg-white border-t-2 h-[.3rem] rounded-sm w-5'></div>
-					<div className='border-white bg-white border-t-2 h-[.3rem] rounded-sm w-12'></div>
+					{/* <footer className='fixed bottom-0 flex flex-col justify-center w-full h-20 gap-3 px-8 bg-violet-900'> */}
+
+					<div className='border-red-600 bg-red-600 h-[.3rem] rounded-sm border-t-2 w-8'></div>
+					<div className='border-orange-500 bg-orange-500 border-t-2 h-[.3rem] rounded-sm w-5'></div>
+					<div className='border-yellow-500 bg-yellow-500 border-t-2 h-[.3rem] rounded-sm w-12'></div>
 				</button>
 			</nav>
-			{isActive && <SpreadMenu onClose={closeMenu} />}
+			{isActive && <SpreadMenu setIsActive={setIsActive} />}
 		</>
 	);
 };
