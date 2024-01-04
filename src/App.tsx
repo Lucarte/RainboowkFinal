@@ -27,16 +27,18 @@ import Author from "./pages/Author";
 import Authors from "./pages/Authors";
 import Illustrators from "./pages/Illustrators";
 import Illustrator from "./pages/Illustrator";
-import Publisher from "./pages/Publisher";
+// import Publisher from "./pages/Publisher";
 import Publishers from "./pages/Publishers";
 import Books from "./pages/Books";
-import Book from "./pages/Book";
+// import Book from "./pages/Book";
 import Buch from "./pages/Buch";
 import Buecher from "./pages/Buecher";
 import Libro from "./pages/Libro";
 import Libros from "./pages/Libros";
 import Livres from "./pages/Livres";
 import Livre from "./pages/Livre";
+import About from "./pages/About";
+import BookCatalog from "./pages/BookCatalog";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -50,15 +52,19 @@ const router = createBrowserRouter(
 				<Route path='/illustrators' element={<Illustrators />} />
 				<Route path='/illustrator/:slug' element={<Illustrator />} />
 				<Route path='/publishers' element={<Publishers />} />
-				<Route path='/publisher/:name' element={<Publisher />} />
+				// Not sure about this route right now.
+				{/* <Route path='/publisher/:name' element={<Publisher />} /> */}
 				<Route path='/books' element={<Books />} />
-				<Route path='/book/:title' element={<Book />} />
+				// Not sure about this route right now.
+				{/* <Route path='/book/:title' element={<Book />} /> */}
 				<Route path='/libros' element={<Libros />} />
 				<Route path='/libro/:title' element={<Libro />} />
 				<Route path='/livres' element={<Livres />} />
 				<Route path='/livre/:title' element={<Livre />} />
 				<Route path='/buecher' element={<Buecher />} />
 				<Route path='/buch/:title' element={<Buch />} />
+				<Route path='/about' element={<About />} />
+				<Route path='/catalog' element={<BookCatalog />} />
 				// For admin
 				<Route element={<ProtectedLayout isAdmin={true} />}>
 					<Route path='/users' element={<UsersList />} />

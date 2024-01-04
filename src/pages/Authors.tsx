@@ -1,3 +1,7 @@
+// DOES NOT WORK AS OF 31.12.2023.
+// MAKE A LINK HERE TO TAKE USERS TO THE SINGLE AUTHORS
+// BZW. MAKE THE AUTHORS CLICKABLE TO GO
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 

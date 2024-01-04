@@ -1,14 +1,9 @@
-import { createContext, useState, ReactNode } from "react";
+import { createContext, ReactNode } from "react";
+import { Auth, defaultAuth, defaultAuthContext } from "../utils/auth";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 type Props = {
 	children: ReactNode;
-};
-
-// DO NOT STORE PASSWORDS IN CONTEXT
-type Auth = {
-	id: number | null;
-	username: string | null;
-	isAdmin: boolean | null;
 };
 
 type AuthContext = {
@@ -16,26 +11,12 @@ type AuthContext = {
 	setAuth: React.Dispatch<React.SetStateAction<Auth>>;
 };
 
-export const defaultAuth: Auth = {
-	id: null,
-	username: null,
-	isAdmin: null,
-};
-
-const defaultAuthContext = {
-	auth: defaultAuth,
-	setAuth: () => {},
-} as AuthContext;
-
 export const AuthContext = createContext<AuthContext>(defaultAuthContext);
 
 const AuthProvider = ({ children }: Props) => {
 	// Instead of useState, I could also use localStorage hook from Chapter 4, to prevent a hard reload
-	const [auth, setAuth] = useState<Auth>(defaultAuth);
-
-	// if (auth.isAdmin === true) {
-	// }
-
+	const [auth, setAuth] = useLocalStorage<Auth>("auth", defaultAuth);
+	// const [auth, setAuth] = useState<Auth>(defaultAuth);
 	return (
 		<AuthContext.Provider value={{ auth, setAuth }}>
 			{children}

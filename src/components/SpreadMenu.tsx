@@ -10,64 +10,64 @@ const SpreadMenu = ({ setIsActive }: Props) => {
 		setIsActive(false);
 	};
 	return (
-		<div className='fixed inset-0 flex items-center justify-center bg-orange-500 bg-opacity-80'>
-			<div className='bg-white p-4 rounded-md'>
-				<li>
-					<NavLink to='/' onClick={handleNavLinkClick}>
-						Home
-					</NavLink>
-				</li>
-				<li>
-					<NavLink to='/catalog' onClick={handleNavLinkClick}>
-						FULL CATALOG
-					</NavLink>
-				</li>
-				<li>
-					<NavLink to='/books' onClick={handleNavLinkClick}>
-						BOOKS IN ENGLISH
-					</NavLink>
-				</li>
-				<li>
-					<NavLink to='/libros' onClick={handleNavLinkClick}>
-						BOOKS IN SPANISH
-					</NavLink>
-				</li>
-				<li>
-					<NavLink to='/livres' onClick={handleNavLinkClick}>
-						BOOKS IN FRENCH
-					</NavLink>
-				</li>
-				<li>
-					<NavLink to='/buecher' onClick={handleNavLinkClick}>
-						BOOKS IN GERMAN
-					</NavLink>
-				</li>
-				<li>
-					<NavLink to='/authors' onClick={handleNavLinkClick}>
-						AUTHORS
-					</NavLink>
-				</li>
-				<li>
-					<NavLink to='/illustrators' onClick={handleNavLinkClick}>
-						ILLUSTRATORS
-					</NavLink>
-				</li>
-				<li>
-					<NavLink to='/publishers' onClick={handleNavLinkClick}>
-						PUBLISHERS
-					</NavLink>
-				</li>
-				<li>
-					<NavLink to='/registration' onClick={handleNavLinkClick}>
-						Registration
-					</NavLink>
-				</li>
-				<li>
-					<NavLink to='/login' onClick={handleNavLinkClick}>
-						Login
-					</NavLink>
-				</li>
-			</div>
+		<div className='font-bold font-comfortaa pb-28 flex flex-col fixed inset-0 list-none items-end p-10 justify-evenly bg-cyan-500 text-white bg-opacity-80 z-10'>
+			{/* <div className='bg-white p-4 rounded-md'> */}
+			<li>
+				<NavLink to='/' onClick={handleNavLinkClick}>
+					homE
+				</NavLink>
+			</li>
+			<li>
+				<NavLink to='/catalog' onClick={handleNavLinkClick}>
+					fulL cataloG
+				</NavLink>
+			</li>
+			<li>
+				<NavLink to='/books' onClick={handleNavLinkClick}>
+					books in englisH
+				</NavLink>
+			</li>
+			<li className=''>
+				<NavLink to='/libros' onClick={handleNavLinkClick}>
+					books in spanisH
+				</NavLink>
+			</li>
+			<li>
+				<NavLink to='/livres' onClick={handleNavLinkClick}>
+					books in frencH
+				</NavLink>
+			</li>
+			<li>
+				<NavLink to='/buecher' onClick={handleNavLinkClick}>
+					books in germaN
+				</NavLink>
+			</li>
+			<li>
+				<NavLink to='/authors' onClick={handleNavLinkClick}>
+					authorS
+				</NavLink>
+			</li>
+			<li>
+				<NavLink to='/illustrators' onClick={handleNavLinkClick}>
+					illustratorS
+				</NavLink>
+			</li>
+			<li>
+				<NavLink to='/publishers' onClick={handleNavLinkClick}>
+					publisherS
+				</NavLink>
+			</li>
+			<li>
+				<NavLink to='/registration' onClick={handleNavLinkClick}>
+					registratioN
+				</NavLink>
+			</li>
+			<li>
+				<NavLink to='/login' onClick={handleNavLinkClick}>
+					logiN
+				</NavLink>
+			</li>
+			{/* </div> */}
 		</div>
 	);
 };

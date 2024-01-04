@@ -1,5 +1,6 @@
 import { useContext } from "react";
-import { AuthContext, defaultAuth } from "../context/AuthProvider";
+import { AuthContext } from "../context/AuthProvider";
+import { defaultAuth } from "../utils/auth";
 import http from "../utils/http";
 
 const User = () => {

@@ -25,7 +25,7 @@ const Header = ({ isActive, setIsActive, handleLogout }: Props) => {
 					setIsActive={setIsActive}
 				/>
 			</header>
-			<main>
+			<main className='flex justify-center pt-16 font-elmessiri'>
 				{isActive ? <SpreadMenu setIsActive={setIsActive} /> : null}
 				<Outlet />
 			</main>

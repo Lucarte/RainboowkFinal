@@ -128,211 +128,255 @@ const Registration = () => {
 
 	return (
 		<>
-			<form
-				className='flex flex-col gap-5'
-				noValidate
-				onSubmit={handleSubmit(onSubmit, onError)}>
-				<div>
-					<label htmlFor='pronouns'>Pronouns</label>
-					<input
-						type='text'
-						placeholder='elle, xier, they...'
-						{...register("pronouns", {})}
-					/>
-				</div>
-				<div>
-					<label htmlFor='salutation'>Salutation</label>
-					<select
-						aria-invalid={errors.salutation ? "true" : "false"}
-						{...register("salutation", {
-							required: {
-								value: true,
-								message: "Please select a salutation.",
-							},
-						})}
-						defaultValue=''>
-						<option disabled value=''>
-							Please select...
-						</option>
-						{greetOptions.map((value) => (
-							<option key={value} value={value}>
-								{value}
-							</option>
-						))}
-					</select>
-					<p className='text-red-700'>{errors.salutation?.message}</p>
-				</div>
-				<div>
-					<label htmlFor='username'>Username</label>
-					<input
-						aria-invalid={errors.username ? "true" : "false"}
-						type='text'
-						placeholder='username'
-						{...register("username", { required: "Please enter a username." })}
-					/>
-					<p className='text-red-700'>{errors.username?.message}</p>
-				</div>
-				<div>
-					<label htmlFor='email'>E-Mail</label>
-					<input
-						aria-invalid={errors.email ? "true" : "false"}
-						type='email'
-						placeholder='you@mail.com'
-						{...register("email", {
-							required: {
-								value: true,
-								message: "Please enter an email.",
-							},
-							pattern: {
-								value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-								message: "Invalid email format",
-							},
-						})}
-					/>
-					<p className='text-red-700'>{errors.email?.message}</p>
-				</div>
-				<div>
-					<label htmlFor='dob'>Date of Birth</label>
-					<input
-						aria-invalid={errors.dob ? "true" : "false"}
-						type='text'
-						placeholder='date of birth'
-						{...register("dob", {
-							required: {
-								value: true,
-								message: "Please enter you date of birth.",
-							},
-							pattern: {
-								value: /^\d{4}-\d{2}-\d{2}$/,
-								message: "Please enter a valid date in the format YYYY-MM-DD",
-							},
-						})}
-					/>
-					<p className='text-red-700'>{errors.dob?.message}</p>
-				</div>
-				<div>
-					<p>Where are you signing up from?</p>
-					{localityOptions.map((option) => (
-						<div key={option.value}>
-							<label htmlFor='{`locality_${option.value}`}'>
-								{option.label}
-							</label>
-							<input
-								aria-invalid={errors.locality ? "true" : "false"}
-								type='radio'
-								{...register("locality", {
+			<article className='flex flex-col items-center'>
+				<h1 className='text-slate-600 px-12 md:px-28 pb-2 pt-4 border-t-4 rounded-b-lg bg-slate-100 text-xl mb-10 mt-6'>
+					-- R e G i S t R a T i O n --
+				</h1>
+				<form
+					className='flex flex-col gap-5 mb-36 px-10'
+					noValidate
+					onSubmit={handleSubmit(onSubmit, onError)}>
+					<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
+						<label htmlFor='pronouns' className=''>
+							Pronouns
+						</label>
+						<input
+							className='border-indigo-200 border-2 rounded-md px-1 '
+							type='text'
+							placeholder='elle, xier, they...'
+							{...register("pronouns", {})}
+						/>
+					</div>
+					<div className='flex flex-col'>
+						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
+							<label htmlFor='salutation'>Salutation</label>
+							<select
+								className='border-indigo-200 border-2 rounded-md px-1'
+								aria-invalid={errors.salutation ? "true" : "false"}
+								{...register("salutation", {
 									required: {
 										value: true,
-										message: "Please select a locality.",
+										message: "Please select a salutation.",
 									},
 								})}
-								value={option.value}
+								defaultValue=''>
+								<option disabled value=''>
+									Please select...
+								</option>
+								{greetOptions.map((value) => (
+									<option key={value} value={value}>
+										{value}
+									</option>
+								))}
+							</select>
+						</div>
+						<p className='text-indigo-700'>{errors.salutation?.message}</p>
+					</div>
+					<div className='flex flex-col'>
+						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
+							<label htmlFor='username'>Username</label>
+							<input
+								className='border-indigo-200 border-2 rounded-md px-1'
+								aria-invalid={errors.username ? "true" : "false"}
+								type='text'
+								placeholder='username'
+								{...register("username", {
+									required: "Please enter a username.",
+								})}
 							/>
 						</div>
-					))}
-					<p className='text-red-700'>{errors.locality?.message}</p>
-				</div>
-				<div>
-					<label htmlFor='personRole'>What is your role here?</label>
-					<select
-						aria-invalid={errors.personRole ? "true" : "false"}
-						{...register("personRole", {
-							required: {
-								value: true,
-								message: "Please make a choice.",
-							},
-						})}
-						defaultValue=''>
-						<option disabled value=''>
-							Please select...
-						</option>
-						{roleOptions.map((value) => (
-							<option value={value} key={value}>
-								{value}
-							</option>
+						<p className='text-indigo-700'>{errors.username?.message}</p>
+					</div>
+					<div className='flex flex-col'>
+						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
+							<label htmlFor='email'>E-Mail</label>
+							<input
+								className='border-indigo-200 border-2 rounded-md px-1'
+								aria-invalid={errors.email ? "true" : "false"}
+								type='email'
+								placeholder='you@mail.com'
+								{...register("email", {
+									required: {
+										value: true,
+										message: "Please enter an email.",
+									},
+									pattern: {
+										value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+										message: "Invalid email format",
+									},
+								})}
+							/>
+						</div>
+						<p className='text-indigo-700'>{errors.email?.message}</p>
+					</div>
+					<div className='flex flex-col'>
+						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
+							<label htmlFor='dob'>Date of Birth</label>
+							<input
+								className='border-indigo-200 border-2 rounded-md px-1'
+								aria-invalid={errors.dob ? "true" : "false"}
+								type='text'
+								placeholder='date of birth'
+								{...register("dob", {
+									required: {
+										value: true,
+										message: "Please enter you date of birth.",
+									},
+									pattern: {
+										value: /^\d{4}-\d{2}-\d{2}$/,
+										message: "Please use yyyy-mm-dd format",
+									},
+								})}
+							/>
+						</div>
+						<p className='text-indigo-700'>{errors.dob?.message}</p>
+					</div>
+					<div className='flex flex-col gap-2'>
+						<p>Where are you signing up from?</p>
+						{localityOptions.map((option) => (
+							<div className='flex gap-3' key={option.value}>
+								<input
+									className='text-indigo-500'
+									aria-invalid={errors.locality ? "true" : "false"}
+									type='radio'
+									{...register("locality", {
+										required: {
+											value: true,
+											message: "Please select a locality.",
+										},
+									})}
+									value={option.value}
+								/>
+								<label htmlFor='{`locality_${option.value}`}'>
+									{option.label}
+								</label>
+							</div>
 						))}
-					</select>
-					<p className='text-red-700'>{errors.personRole?.message}</p>
-				</div>
-				<div>
-					<label htmlFor='publicity'>How did you find out about us?</label>
-					<select
-						aria-invalid={errors.publicity ? "true" : "false"}
-						{...register("publicity", {
-							required: { value: true, message: "Please make a choice." },
-						})}
-						defaultValue=''>
-						<option disabled value=''>
-							Please select...
-						</option>
-						{publicityOptions.map((value) => (
-							<option value={value}>{value}</option>
-						))}
-					</select>
-					<p className='text-red-700'>{errors.publicity?.message}</p>
-				</div>
-				<div>
-					<label htmlFor='password'>Password</label>
-					<input
-						aria-invalid={errors.password ? "true" : "false"}
-						type='password'
-						placeholder='password'
-						{...register("password", {
-							required: "Please enter a password.",
-							validate: {
-								minLength: (value) =>
-									value.length >= 8 ||
-									"Password must be at least 8 characters long.",
-								lowercase: (value) =>
-									/^(?=.*[a-z])/.test(value) ||
-									"Password must have at least one small letter.",
-								uppercase: (value) =>
-									/^(?=.*[A-Z])/.test(value) ||
-									"Password must have at least one capital letter.",
-								number: (value) =>
-									/^(?=.*\d)/.test(value) ||
-									"Password must have at least one number.",
-								specialChar: (value) =>
-									/^(?=.*[@$!%*?&])/.test(value) ||
-									"Password must have at least one special character.",
-							},
-						})}
-					/>
-					<p className='text-red-700'>{errors.password?.message}</p>
-				</div>
-				<div>
-					<label htmlFor='passwordConfirmation'>Password Confirmation</label>
-					<input
-						aria-invalid={errors.passwordConfirmation ? "true" : "false"}
-						type='password'
-						placeholder='password confirmation'
-						{...register("passwordConfirmation", {
-							required: "Please re-enter your password.",
-							validate: {
-								matchPassword: (value) =>
-									value !== "password" ?? "Passwords do not match.",
-							},
-						})}
-					/>
-					<p className='text-red-700'>{errors.passwordConfirmation?.message}</p>
-				</div>
-				<div>
-					<label htmlFor='terms'>I accept the terms and conditions.</label>
-					<input
-						aria-invalid={errors.terms ? "true" : "false"}
-						type='radio'
-						{...register("terms", {
-							required: "Please accept the terms and conditions.",
-						})}
-					/>
-					<p className='text-red-700'>{errors.terms?.message}</p>
-				</div>
-				<div>
-					<button disabled={isSubmitting} type='submit'>
-						Register
-					</button>
-				</div>
-			</form>
+						<p className='text-indigo-700'>{errors.locality?.message}</p>
+					</div>
+					<div className='flex flex-col'>
+						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between gap-12'>
+							<label htmlFor='personRole'>What is your role here?</label>
+							<select
+								className='border-indigo-200 border-2 rounded-md px-1'
+								aria-invalid={errors.personRole ? "true" : "false"}
+								{...register("personRole", {
+									required: {
+										value: true,
+										message: "Please make a choice.",
+									},
+								})}
+								defaultValue=''>
+								<option disabled value=''>
+									Please select...
+								</option>
+								{roleOptions.map((value) => (
+									<option value={value} key={value}>
+										{value}
+									</option>
+								))}
+							</select>
+						</div>
+						<p className='text-indigo-700'>{errors.personRole?.message}</p>
+					</div>
+					<div className='flex flex-col'>
+						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
+							<label htmlFor='publicity'>How did you find out about us?</label>
+							<select
+								className='border-indigo-200 border-2 rounded-md px-1'
+								aria-invalid={errors.publicity ? "true" : "false"}
+								{...register("publicity", {
+									required: { value: true, message: "Please make a choice." },
+								})}
+								defaultValue=''>
+								<option disabled value=''>
+									Please select...
+								</option>
+								{publicityOptions.map((value) => (
+									<option value={value}>{value}</option>
+								))}
+							</select>
+						</div>
+						<p className='text-indigo-700'>{errors.publicity?.message}</p>
+					</div>
+					<div className='flex flex-col'>
+						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
+							<label htmlFor='password'>Password</label>
+							<input
+								className='border-indigo-200 border-2 rounded-md px-1'
+								aria-invalid={errors.password ? "true" : "false"}
+								type='password'
+								placeholder='password'
+								{...register("password", {
+									required: "Please enter a password.",
+									validate: {
+										minLength: (value) =>
+											value.length >= 8 ||
+											"Password must be at least 8 characters long.",
+										lowercase: (value) =>
+											/^(?=.*[a-z])/.test(value) ||
+											"Password must have at least one small letter.",
+										uppercase: (value) =>
+											/^(?=.*[A-Z])/.test(value) ||
+											"Password must have at least one capital letter.",
+										number: (value) =>
+											/^(?=.*\d)/.test(value) ||
+											"Password must have at least one number.",
+										specialChar: (value) =>
+											/^(?=.*[@$!%*?&])/.test(value) ||
+											"Password must have at least one special character.",
+									},
+								})}
+							/>
+						</div>
+						<p className='text-indigo-700'>{errors.password?.message}</p>
+					</div>
+					<div className='flex flex-col'>
+						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
+							<label htmlFor='passwordConfirmation'>
+								Password Confirmation
+							</label>
+							<input
+								className='border-indigo-200 border-2 rounded-md px-1'
+								aria-invalid={errors.passwordConfirmation ? "true" : "false"}
+								type='password'
+								placeholder='password confirmation'
+								{...register("passwordConfirmation", {
+									required: "Please re-enter your password.",
+									validate: {
+										matchPassword: (value) =>
+											value !== "password" ?? "Passwords do not match.",
+									},
+								})}
+							/>
+						</div>
+						<p className='text-indigo-700'>
+							{errors.passwordConfirmation?.message}
+						</p>
+					</div>
+					<div className='flex flex-col gap-1 py-10 items-center md:p-10'>
+						<div className='flex gap-5'>
+							<input
+								aria-invalid={errors.terms ? "true" : "false"}
+								type='radio'
+								{...register("terms", {
+									required: "Please accept the terms and conditions.",
+								})}
+							/>
+							<label htmlFor='terms'>I accept the terms and conditions.</label>
+						</div>
+						<p className='text-indigo-700'>{errors.terms?.message}</p>
+					</div>
+					<div className='flex justify-center md:justify-start'>
+						<button
+							disabled={isSubmitting}
+							className='md:text-right md:pl-8 bg-indigo-500 py-2 px-4 rounded-md w-fit hover:text-indigo-400 text-white'
+							type='submit'>
+							registeR
+						</button>
+					</div>
+				</form>
+			</article>
 			<DevTool control={control} />
 		</>
 	);

@@ -42,6 +42,8 @@ const Login = () => {
 			const userData = response.data;
 
 			setAuth({ ...userData, isAdmin: userData.isAdmin ?? false });
+			// await getInitialAuth(setAuth);
+			// await getInitialAuth(); // Fetch additional user information
 			navigate(from);
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (exception: any) {
@@ -67,60 +69,67 @@ const Login = () => {
 			<form
 				noValidate
 				onSubmit={handleSubmit(onSubmit, onError)}
-				className='p-56 flex flex-col gap-3'>
-				<label htmlFor='email'>E-Mail</label>
-				<input
-					className='p-2 pl-3'
-					placeholder='your@mail.com'
-					type='email'
-					aria-invalid={errors.email ? "true" : "false"}
-					{...register("email", {
-						required: {
-							value: true,
-							message: "Please enter an email",
-						},
-						pattern: {
-							value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-							message: "Invalid email format",
-						},
-					})}
-				/>
-				<p className='text-cyan-500'>{errors.email?.message}</p>
-				<br />
-				<label htmlFor='password'>Password</label>
-				<input
-					className='p-2 pl-3'
-					placeholder='Password'
-					type='password'
-					aria-invalid={errors.password ? "true" : "false"}
-					{...register("password", {
-						required: {
-							value: true,
-							message: "Please enter a password",
-						},
-						validate: {
-							minLength: (value) =>
-								value.length >= 8 ||
-								"Passwort muss mindestens 8 Zeichen lang sein",
-							lowercase: (value) =>
-								/^(?=.*[a-z])/.test(value) ||
-								"Passwort muss mindestens einen Kleinbuchstaben enthalten",
-							uppercase: (value) =>
-								/^(?=.*[A-Z])/.test(value) ||
-								"Passwort muss mindestens einen Großbuchstaben enthalten",
-							number: (value) =>
-								/^(?=.*\d)/.test(value) ||
-								"Passwort muss mindestens eine Zahl enthalten",
-							specialChar: (value) =>
-								/^(?=.*[@$!%*?&])/.test(value) ||
-								"Passwort muss mindestens ein Sonderzeichen enthalten",
-						},
-					})}
-				/>
+				className='w-56 flex flex-col gap-4'>
+				<div className='flex flex-col items-end text-xl'>
+					<label htmlFor='email'>: e-maiL</label>
+					<input
+						className='p-2 pl-3 text-center'
+						placeholder='your@mail.com'
+						type='email'
+						aria-invalid={errors.email ? "true" : "false"}
+						{...register("email", {
+							required: {
+								value: true,
+								message: "Please enter an email",
+							},
+							pattern: {
+								value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+								message: "Invalid email format",
+							},
+						})}
+					/>
+					<p className='text-cyan-500'>{errors.email?.message}</p>
+				</div>
+				<div className='flex flex-col items-end text-xl'>
+					<label htmlFor='password'>: passworD</label>
+					<input
+						className='p-2 pl-3 text-center'
+						placeholder='Password'
+						type='password'
+						aria-invalid={errors.password ? "true" : "false"}
+						{...register("password", {
+							required: {
+								value: true,
+								message: "Please enter a password",
+							},
+							validate: {
+								minLength: (value) =>
+									value.length >= 8 ||
+									"Passwort muss mindestens 8 Zeichen lang sein",
+								lowercase: (value) =>
+									/^(?=.*[a-z])/.test(value) ||
+									"Passwort muss mindestens einen Kleinbuchstaben enthalten",
+								uppercase: (value) =>
+									/^(?=.*[A-Z])/.test(value) ||
+									"Passwort muss mindestens einen Großbuchstaben enthalten",
+								number: (value) =>
+									/^(?=.*\d)/.test(value) ||
+									"Passwort muss mindestens eine Zahl enthalten",
+								specialChar: (value) =>
+									/^(?=.*[@$!%*?&])/.test(value) ||
+									"Passwort muss mindestens ein Sonderzeichen enthalten",
+							},
+						})}
+					/>
+					<p className='text-cyan-500'>{errors.password?.message}</p>
+				</div>
 
-				<p className='text-cyan-500'>{errors.password?.message}</p>
 				<br />
-				<button disabled={isSubmitting}>Login</button>
+				<button
+					className='bg-indigo-500 py-2 px-4 rounded-md w-fit hover:text-indigo-400 text-white'
+					disabled={isSubmitting}>
+					Login
+				</button>
 			</form>
 			<DevTool control={control} />
 		</>

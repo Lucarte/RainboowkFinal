@@ -14,8 +14,8 @@ const Navigation = ({ isActive, setIsActive, handleLogout }: Props) => {
 
 	return (
 		<>
-			<nav className={isActive ? "active" : "flex gap-3"}>
-				<ul className='hidden md:flex gap-3'>
+			<nav className={isActive ? "active" : "flex"}>
+				<ul className='hidden md:flex gap-3 pr-16 items-center'>
 					<li>
 						<NavLink to='/'>Home</NavLink>
 					</li>
@@ -36,6 +36,11 @@ const Navigation = ({ isActive, setIsActive, handleLogout }: Props) => {
 							<NavLink to='/login'>Login</NavLink>
 						</li>
 					)}
+					<li>
+						<button className='text-sm bg-indigo-500 mx-12 py-2 px-4 rounded-md w-fit hover:text-indigo-400 text-white'>
+							<NavLink to='/login'>Add Book</NavLink>
+						</button>
+					</li>
 				</ul>
 				<button
 					onClick={() => setIsActive((value) => !value)}
