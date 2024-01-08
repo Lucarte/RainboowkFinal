@@ -106,8 +106,8 @@ const Registration = () => {
 
 	// Options for my Locality (radio input) Field
 	const localityOptions = [
-		{ value: "within_germany", label: "Within Germany" },
-		{ value: "beyond_germany", label: "Beyond Germany" },
+		{ value: "within_germany", label: "within germanY" },
+		{ value: "beyond_germany", label: "beyond germanY" },
 	];
 
 	// Options for my PersonRole Select Field
@@ -124,24 +124,24 @@ const Registration = () => {
 	];
 
 	// Options for my Publicity Select Field
-	const publicityOptions = ["Mouthword", "Online Search", "Other"];
+	const publicityOptions = ["mouthworD", "online searcH", "otheR"];
 
 	return (
 		<>
-			<article className='flex flex-col items-center'>
-				<h1 className='text-slate-600 px-12 md:px-28 pb-2 pt-4 border-t-4 rounded-b-lg bg-slate-100 text-xl mb-10 mt-6'>
+			<article className='flex flex-col items-center md:rounded-full md:mb-44 md:bg-slate-50 md:px-16 md:pb-40'>
+				<h1 className='text-center md:w-[40rem] pt-0 mb-10 md:pt-12 text-2xl md:text-2xl rounded-b-lg md:mb-20 text-slate-700 md:px-28 md:bg-slate-50'>
 					-- R e G i S t R a T i O n --
 				</h1>
 				<form
-					className='flex flex-col gap-5 mb-36 px-10'
+					className='flex flex-col gap-5 px-10 md:w-[40rem] mb-36 md:mb-0'
 					noValidate
 					onSubmit={handleSubmit(onSubmit, onError)}>
 					<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
-						<label htmlFor='pronouns' className=''>
-							Pronouns
+						<label htmlFor='pronouns' className='text-right'>
+							: pronounS
 						</label>
 						<input
-							className='border-indigo-200 border-2 rounded-md px-1 '
+							className='px-1 border-2 border-indigo-200 rounded-md focus:outline-indigo-700 md:w-56'
 							type='text'
 							placeholder='elle, xier, they...'
 							{...register("pronouns", {})}
@@ -149,14 +149,16 @@ const Registration = () => {
 					</div>
 					<div className='flex flex-col'>
 						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
-							<label htmlFor='salutation'>Salutation</label>
+							<label htmlFor='salutation' className='text-right'>
+								: salutatioN
+							</label>
 							<select
-								className='border-indigo-200 border-2 rounded-md px-1'
+								className='px-1 border-2 border-indigo-200 rounded-md md:w-56 focus:outline-indigo-700'
 								aria-invalid={errors.salutation ? "true" : "false"}
 								{...register("salutation", {
 									required: {
 										value: true,
-										message: "Please select a salutation.",
+										message: "please select a salutatioN",
 									},
 								})}
 								defaultValue=''>
@@ -170,13 +172,17 @@ const Registration = () => {
 								))}
 							</select>
 						</div>
-						<p className='text-indigo-700'>{errors.salutation?.message}</p>
+						<p className='mt-2 text-sm text-right text-indigo-700'>
+							{errors.salutation?.message}
+						</p>
 					</div>
 					<div className='flex flex-col'>
 						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
-							<label htmlFor='username'>Username</label>
+							<label htmlFor='username' className='text-right'>
+								: usernamE
+							</label>
 							<input
-								className='border-indigo-200 border-2 rounded-md px-1'
+								className='px-1 border-2 border-indigo-200 rounded-md md:w-56 focus:border-indigo-700 focus:outline-none'
 								aria-invalid={errors.username ? "true" : "false"}
 								type='text'
 								placeholder='username'
@@ -185,85 +191,74 @@ const Registration = () => {
 								})}
 							/>
 						</div>
-						<p className='text-indigo-700'>{errors.username?.message}</p>
+						<p className='mt-2 text-sm text-right text-indigo-700'>
+							{errors.username?.message}
+						</p>
 					</div>
 					<div className='flex flex-col'>
 						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
-							<label htmlFor='email'>E-Mail</label>
+							<label htmlFor='email' className='text-right'>
+								: e-maiL
+							</label>
 							<input
-								className='border-indigo-200 border-2 rounded-md px-1'
+								className='px-1 border-2 border-indigo-200 rounded-md md:w-56 focus:border-indigo-700 focus:outline-none'
 								aria-invalid={errors.email ? "true" : "false"}
 								type='email'
 								placeholder='you@mail.com'
 								{...register("email", {
 									required: {
 										value: true,
-										message: "Please enter an email.",
+										message: "please enter an emaiL",
 									},
 									pattern: {
 										value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-										message: "Invalid email format",
+										message: "invalid email formaT",
 									},
 								})}
 							/>
 						</div>
-						<p className='text-indigo-700'>{errors.email?.message}</p>
+						<p className='mt-2 text-sm text-right text-indigo-700'>
+							{errors.email?.message}
+						</p>
 					</div>
 					<div className='flex flex-col'>
 						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
-							<label htmlFor='dob'>Date of Birth</label>
+							<label htmlFor='dob' className='text-right'>
+								: date of birtH
+							</label>
 							<input
-								className='border-indigo-200 border-2 rounded-md px-1'
+								className='px-1 border-2 border-indigo-200 rounded-md md:w-56 focus:border-indigo-700 focus:outline-none'
 								aria-invalid={errors.dob ? "true" : "false"}
 								type='text'
 								placeholder='date of birth'
 								{...register("dob", {
 									required: {
 										value: true,
-										message: "Please enter you date of birth.",
+										message: "please enter you date of birtH",
 									},
 									pattern: {
 										value: /^\d{4}-\d{2}-\d{2}$/,
-										message: "Please use yyyy-mm-dd format",
+										message: "please use yyyy-mm-dd formaT",
 									},
 								})}
 							/>
 						</div>
-						<p className='text-indigo-700'>{errors.dob?.message}</p>
-					</div>
-					<div className='flex flex-col gap-2'>
-						<p>Where are you signing up from?</p>
-						{localityOptions.map((option) => (
-							<div className='flex gap-3' key={option.value}>
-								<input
-									className='text-indigo-500'
-									aria-invalid={errors.locality ? "true" : "false"}
-									type='radio'
-									{...register("locality", {
-										required: {
-											value: true,
-											message: "Please select a locality.",
-										},
-									})}
-									value={option.value}
-								/>
-								<label htmlFor='{`locality_${option.value}`}'>
-									{option.label}
-								</label>
-							</div>
-						))}
-						<p className='text-indigo-700'>{errors.locality?.message}</p>
+						<p className='mt-2 text-sm text-right text-indigo-700'>
+							{errors.dob?.message}
+						</p>
 					</div>
 					<div className='flex flex-col'>
-						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between gap-12'>
-							<label htmlFor='personRole'>What is your role here?</label>
+						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
+							<label className='text-right' htmlFor='personRole'>
+								? what is your role herE
+							</label>
 							<select
-								className='border-indigo-200 border-2 rounded-md px-1'
+								className='px-1 border-2 border-indigo-200 rounded-md md:w-56 focus:outline-indigo-700'
 								aria-invalid={errors.personRole ? "true" : "false"}
 								{...register("personRole", {
 									required: {
 										value: true,
-										message: "Please make a choice.",
+										message: "please make a choicE",
 									},
 								})}
 								defaultValue=''>
@@ -277,16 +272,20 @@ const Registration = () => {
 								))}
 							</select>
 						</div>
-						<p className='text-indigo-700'>{errors.personRole?.message}</p>
+						<p className='mt-2 text-sm text-right text-indigo-700'>
+							{errors.personRole?.message}
+						</p>
 					</div>
 					<div className='flex flex-col'>
 						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
-							<label htmlFor='publicity'>How did you find out about us?</label>
+							<label className='text-right' htmlFor='publicity'>
+								? how did you find out about uS
+							</label>
 							<select
-								className='border-indigo-200 border-2 rounded-md px-1'
+								className='px-1 border-2 border-indigo-200 rounded-md md:w-56 focus:outline-indigo-700'
 								aria-invalid={errors.publicity ? "true" : "false"}
 								{...register("publicity", {
-									required: { value: true, message: "Please make a choice." },
+									required: { value: true, message: "please make a choicE" },
 								})}
 								defaultValue=''>
 								<option disabled value=''>
@@ -297,13 +296,17 @@ const Registration = () => {
 								))}
 							</select>
 						</div>
-						<p className='text-indigo-700'>{errors.publicity?.message}</p>
+						<p className='mt-2 text-sm text-right text-indigo-700'>
+							{errors.publicity?.message}
+						</p>
 					</div>
 					<div className='flex flex-col'>
 						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
-							<label htmlFor='password'>Password</label>
+							<label htmlFor='password' className='text-right'>
+								: passworD
+							</label>
 							<input
-								className='border-indigo-200 border-2 rounded-md px-1'
+								className='px-1 border-2 border-indigo-200 rounded-md md:w-56 focus:border-indigo-700 focus:outline-none'
 								aria-invalid={errors.password ? "true" : "false"}
 								type='password'
 								placeholder='password'
@@ -329,15 +332,17 @@ const Registration = () => {
 								})}
 							/>
 						</div>
-						<p className='text-indigo-700'>{errors.password?.message}</p>
+						<p className='mt-2 text-sm text-right text-indigo-700'>
+							{errors.password?.message}
+						</p>
 					</div>
 					<div className='flex flex-col'>
 						<div className='flex flex-col gap-2 md:flex-row md:w-full md:justify-between'>
-							<label htmlFor='passwordConfirmation'>
-								Password Confirmation
+							<label className='text-right' htmlFor='passwordConfirmation'>
+								: password confirmatioN
 							</label>
 							<input
-								className='border-indigo-200 border-2 rounded-md px-1'
+								className='px-1 border-2 border-indigo-200 rounded-md md:w-56 focus:border-indigo-700 focus:outline-none'
 								aria-invalid={errors.passwordConfirmation ? "true" : "false"}
 								type='password'
 								placeholder='password confirmation'
@@ -350,33 +355,76 @@ const Registration = () => {
 								})}
 							/>
 						</div>
-						<p className='text-indigo-700'>
+						<p className='mt-2 text-sm text-right text-indigo-700'>
 							{errors.passwordConfirmation?.message}
 						</p>
 					</div>
-					<div className='flex flex-col gap-1 py-10 items-center md:p-10'>
+					<div className='flex flex-col gap-2 mt-2 md:flex-row md:justify-between'>
+						<p className='text-right md:text-left'>
+							? where are you signing up froM
+						</p>
+						<div className=' md:flex-col'>
+							{localityOptions.map((option) => (
+								<div className='flex justify-end gap-3' key={option.value}>
+									<label htmlFor='{`locality_${option.value}`}' className=''>
+										{option.label}
+									</label>
+									<input
+										className='text-indigo-500 focus:border-indigo-700 focus:outline-none'
+										aria-invalid={errors.locality ? "true" : "false"}
+										type='radio'
+										{...register("locality", {
+											required: {
+												value: true,
+												message: "please select a localitY",
+											},
+										})}
+										value={option.value}
+									/>
+								</div>
+							))}
+							<p className='mt-2 text-sm text-right text-indigo-700'>
+								{errors.locality?.message}
+							</p>
+						</div>
+					</div>
+					<div className='flex flex-col gap-1 pt-8 items-left md:py-10'>
 						<div className='flex gap-5'>
 							<input
+								// className='w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
+								className='w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 focus:ring-purple-500 focus:border-indigo-700 focus:outline-none'
 								aria-invalid={errors.terms ? "true" : "false"}
 								type='radio'
 								{...register("terms", {
-									required: "Please accept the terms and conditions.",
+									required: "please accept the terms and conditionS",
 								})}
 							/>
-							<label htmlFor='terms'>I accept the terms and conditions.</label>
+							<label htmlFor='terms'>
+								i accept the{" "}
+								<a
+									href='#'
+									// style does not seem to work
+									className='px-1 text-indigo-700 dark:text-indigo-500 hover:underline focus:outline-indigo-700'>
+									terms and conditionS
+								</a>
+								.
+							</label>
 						</div>
-						<p className='text-indigo-700'>{errors.terms?.message}</p>
+						<p className='mt-2 text-sm text-right text-indigo-700'>
+							{errors.terms?.message}
+						</p>
 					</div>
-					<div className='flex justify-center md:justify-start'>
+					<div className='flex justify-end md:justify-center md:-mb-12'>
 						<button
 							disabled={isSubmitting}
-							className='md:text-right md:pl-8 bg-indigo-500 py-2 px-4 rounded-md w-fit hover:text-indigo-400 text-white'
+							className='px-4 py-2 text-white bg-indigo-500 rounded-md w-fit hover:text-indigo-400 focus:outline-indigo-800'
 							type='submit'>
 							registeR
 						</button>
 					</div>
 				</form>
 			</article>
+			{/* </main> */}
 			<DevTool control={control} />
 		</>
 	);

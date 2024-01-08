@@ -66,71 +66,74 @@ const Login = () => {
 
 	return (
 		<>
-			<form
-				noValidate
-				onSubmit={handleSubmit(onSubmit, onError)}
-				className='w-56 flex flex-col gap-4'>
-				<div className='flex flex-col items-end text-xl'>
-					<label htmlFor='email'>: e-maiL</label>
-					<input
-						className='p-2 pl-3 text-center'
-						placeholder='your@mail.com'
-						type='email'
-						aria-invalid={errors.email ? "true" : "false"}
-						{...register("email", {
-							required: {
-								value: true,
-								message: "Please enter an email",
-							},
-							pattern: {
-								value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-								message: "Invalid email format",
-							},
-						})}
-					/>
-					<p className='text-cyan-500'>{errors.email?.message}</p>
-				</div>
-				<div className='flex flex-col items-end text-xl'>
-					<label htmlFor='password'>: passworD</label>
-					<input
-						className='p-2 pl-3 text-center'
-						placeholder='Password'
-						type='password'
-						aria-invalid={errors.password ? "true" : "false"}
-						{...register("password", {
-							required: {
-								value: true,
-								message: "Please enter a password",
-							},
-							validate: {
-								minLength: (value) =>
-									value.length >= 8 ||
-									"Passwort muss mindestens 8 Zeichen lang sein",
-								lowercase: (value) =>
-									/^(?=.*[a-z])/.test(value) ||
-									"Passwort muss mindestens einen Kleinbuchstaben enthalten",
-								uppercase: (value) =>
-									/^(?=.*[A-Z])/.test(value) ||
-									"Passwort muss mindestens einen Großbuchstaben enthalten",
-								number: (value) =>
-									/^(?=.*\d)/.test(value) ||
-									"Passwort muss mindestens eine Zahl enthalten",
-								specialChar: (value) =>
-									/^(?=.*[@$!%*?&])/.test(value) ||
-									"Passwort muss mindestens ein Sonderzeichen enthalten",
-							},
-						})}
-					/>
-					<p className='text-cyan-500'>{errors.password?.message}</p>
-				</div>
+			<main className='h-screen'>
+				<form
+					noValidate
+					onSubmit={handleSubmit(onSubmit, onError)}
+					className='flex flex-col w-56 gap-6 md:gap-8'>
+					<h1 className='p-4 pb-8 text-xl font-bold text-center'>L o G i N</h1>
+					<div className='flex flex-col items-end gap-1 md:gap-2'>
+						<label htmlFor='email'>: e-maiL</label>
+						<input
+							className='w-56 py-1 pl-3 text-sm text-left border-2 border-indigo-200 rounded-md focus:border-indigo-700 focus:outline-none'
+							placeholder='your@mail.com'
+							type='email'
+							aria-invalid={errors.email ? "true" : "false"}
+							{...register("email", {
+								required: {
+									value: true,
+									message: "Please enter an email",
+								},
+								pattern: {
+									value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+									message: "Invalid email format",
+								},
+							})}
+						/>
+						<p className='text-cyan-500'>{errors.email?.message}</p>
+					</div>
+					<div className='flex flex-col items-end gap-1 md:gap-2'>
+						<label htmlFor='password'>: passworD</label>
+						<input
+							className='w-56 py-1 pl-3 text-sm text-left border-2 border-indigo-200 rounded-md focus:border-indigo-700 focus:outline-none'
+							placeholder='password'
+							type='password'
+							aria-invalid={errors.password ? "true" : "false"}
+							{...register("password", {
+								required: {
+									value: true,
+									message: "Please enter a password",
+								},
+								validate: {
+									minLength: (value) =>
+										value.length >= 8 ||
+										"Passwort muss mindestens 8 Zeichen lang sein",
+									lowercase: (value) =>
+										/^(?=.*[a-z])/.test(value) ||
+										"Passwort muss mindestens einen Kleinbuchstaben enthalten",
+									uppercase: (value) =>
+										/^(?=.*[A-Z])/.test(value) ||
+										"Passwort muss mindestens einen Großbuchstaben enthalten",
+									number: (value) =>
+										/^(?=.*\d)/.test(value) ||
+										"Passwort muss mindestens eine Zahl enthalten",
+									specialChar: (value) =>
+										/^(?=.*[@$!%*?&])/.test(value) ||
+										"Passwort muss mindestens ein Sonderzeichen enthalten",
+								},
+							})}
+						/>
+						<p className='text-cyan-500'>{errors.password?.message}</p>
+					</div>
 
-				<br />
-				<button
-					className='bg-indigo-500 py-2 px-4 rounded-md w-fit hover:text-indigo-400 text-white'
-					disabled={isSubmitting}>
-					Login
-				</button>
-			</form>
+					<br />
+					<button
+						className='px-4 py-2 text-white bg-indigo-500 rounded-md w-fit hover:text-indigo-400 focus:outline-indigo-900 '
+						disabled={isSubmitting}>
+						Login
+					</button>
+				</form>
+			</main>
 			<DevTool control={control} />
 		</>
 	);
