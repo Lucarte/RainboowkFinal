@@ -41,7 +41,12 @@ const Navigation = ({ isActive, setIsActive, handleLogout }: Props) => {
 					)}
 					<li>
 						<button className='px-4 py-2 mx-12 text-sm text-white bg-indigo-500 rounded-md w-fit hover:text-indigo-400'>
-							<NavLink to='/login'>Add Book</NavLink>
+							Add Book
+							<NavLink to='/book/create'></NavLink>
+							{/* <NavLink to='/book/create'>English</NavLink> */}
+							{/* <NavLink to='/libro/create'>Spanish</NavLink>
+							<NavLink to='/livre/create'>French</NavLink>
+							<NavLink to='/buch/create'>German</NavLink> */}
 						</button>
 					</li>
 				</ul>

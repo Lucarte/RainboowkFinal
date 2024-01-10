@@ -3,11 +3,11 @@
 // BZW. MAKE THE AUTHORS CLICKABLE TO GO
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import http from "../utils/http";
 
 type Author = {
 	id: number;
-	name: string;
+	fullname: string;
 };
 
 const Authors = () => {
@@ -18,16 +18,20 @@ const Authors = () => {
 		const fetchData = async () => {
 			try {
 				// Make a GET request to your backend API endpoint
-				const response = await axios.get("/api/authors"); // Adjust the endpoint
+				const response = await http.get("/api/authors");
+
+				// Log the entire response
+				console.log("Full Response:", response);
 
 				// Update the state with the fetched data
-				setAuthors(response.data.authors); // Adjust the structure based on your API response
+				const fetchedAuthors = response.data.Authors || [];
+				console.log("Fetched Authors:", fetchedAuthors);
+				setAuthors(fetchedAuthors);
 			} catch (error) {
 				console.error("Error fetching data:", error);
 			}
 		};
 
-		// Call the fetch function
 		fetchData();
 	}, []); // Empty dependency array means this effect runs once when the component mounts
 
@@ -37,7 +41,9 @@ const Authors = () => {
 			{/* Render your authors data */}
 			<ul>
 				{authors.map((author) => (
-					<li key={author.id}>{author.name}</li>
+					<li key={author.id}>
+						<button>{author.fullname}</button>
+					</li>
 				))}
 			</ul>
 		</div>

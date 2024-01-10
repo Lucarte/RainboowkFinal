@@ -18,8 +18,6 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 // import Dashboard from "./pages/Dashboard";
 // import Unauthorized from "./pages/Unauthorized";
-// import Blog, { blogloader } from "./pages/Blog";
-// import Blogpost, { blopostLoader } from "./pages/Blogpost";
 import Registration from "./pages/Registration";
 import UsersList from "./pages/UserList";
 import User from "./pages/User";
@@ -27,7 +25,6 @@ import Author from "./pages/Author";
 import Authors from "./pages/Authors";
 import Illustrators from "./pages/Illustrators";
 import Illustrator from "./pages/Illustrator";
-// import Publisher from "./pages/Publisher";
 import Publishers from "./pages/Publishers";
 import Books from "./pages/Books";
 // import Book from "./pages/Book";
@@ -39,6 +36,7 @@ import Livres from "./pages/Livres";
 import Livre from "./pages/Livre";
 import About from "./pages/About";
 import BookCatalog from "./pages/BookCatalog";
+import Publisher from "./pages/Publisher";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -52,8 +50,7 @@ const router = createBrowserRouter(
 				<Route path='/illustrators' element={<Illustrators />} />
 				<Route path='/illustrator/:slug' element={<Illustrator />} />
 				<Route path='/publishers' element={<Publishers />} />
-				// Not sure about this route right now.
-				{/* <Route path='/publisher/:name' element={<Publisher />} /> */}
+				<Route path='/publisher/:name' element={<Publisher />} />
 				<Route path='/books' element={<Books />} />
 				// Not sure about this route right now.
 				{/* <Route path='/book/:title' element={<Book />} /> */}
@@ -65,6 +62,9 @@ const router = createBrowserRouter(
 				<Route path='/buch/:title' element={<Buch />} />
 				<Route path='/about' element={<About />} />
 				<Route path='/catalog' element={<BookCatalog />} />
+				<Route path='/authors' element={<Authors />} />
+				<Route path='/illustrators' element={<Illustrators />} />
+				<Route path='/publishers' element={<Publishers />} />
 				// For admin
 				<Route element={<ProtectedLayout isAdmin={true} />}>
 					<Route path='/users' element={<UsersList />} />

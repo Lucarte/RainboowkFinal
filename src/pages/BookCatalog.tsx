@@ -4,7 +4,11 @@ import Book from "./Book";
 import { ApiBookInfo } from "../types/ApiBookTypes";
 import CatalogLanguage from "./CatalogLanguage";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import axios from "axios";
+import http from "../utils/http";
+import Books from "./Books";
+import Libros from "./Libros";
+import Buecher from "./Buecher";
+import Livres from "./Livres";
 
 type CatalogLan = string | null;
 
@@ -41,8 +45,7 @@ const BookCatalog = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				// const response = await axios.get("api/catalog");
-				const response = await axios.get("api/catalog", {
+				const response = await http.get("api/catalog", {
 					headers: {
 						Accept: "application/json",
 					},
@@ -51,8 +54,13 @@ const BookCatalog = () => {
 
 				console.log("API Response:", response);
 
-				if (Array.isArray(response.data)) {
-					setBooks(response.data);
+				if (
+					typeof response.data === "object" &&
+					Array.isArray(response.data.books)
+				) {
+					// Extract the array from the "books" property
+					const booksArray = response.data.books;
+					setBooks(booksArray);
 				} else {
 					console.error("API response is not an array:", response.data);
 				}
@@ -114,7 +122,7 @@ const BookCatalog = () => {
 	// <button>Add Book</button>;
 
 	return (
-		<section className='flex flex-col gap-6'>
+		<section className='flex flex-col gap-6 mb-28'>
 			{/* // 'onSearchChange' name would point to the event hooked to the setSearch, makes
 			it quicker to infer, the info. */}
 			<SearchBar
@@ -123,7 +131,11 @@ const BookCatalog = () => {
 				availableOnly={availableOnly}
 				onAvailabilityChange={handleAvailabilityChange}
 			/>
-
+			<Books />
+			{/* ? */}
+			<Libros />
+			<Livres />
+			<Buecher />
 			{rows}
 		</section>
 	);

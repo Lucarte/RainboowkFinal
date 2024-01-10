@@ -1,7 +1,7 @@
 export type ApiBookInfo = {
 	id: number;
 	user_id: number;
-	ISBN: number;
+	ISBN: string;
 	title: string;
 	description: string;
 	author_id: number;
@@ -11,5 +11,12 @@ export type ApiBookInfo = {
 	original_language: string;
 	created_at: string;
 	updated_at: string;
-	// ... other properties as needed
+	cover: string;
+	alt: string;
+	author: string;
+	illustrator: string;
+	publisher: string;
+	oName: string;
+	website?: string;
+	year?: number;
 };

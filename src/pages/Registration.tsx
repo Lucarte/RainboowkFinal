@@ -124,7 +124,7 @@ const Registration = () => {
 	];
 
 	// Options for my Publicity Select Field
-	const publicityOptions = ["mouthworD", "online searcH", "otheR"];
+	const publicityOptions = ["Mouthword", "Online Search", "Other"];
 
 	return (
 		<>
@@ -292,7 +292,9 @@ const Registration = () => {
 									Please select...
 								</option>
 								{publicityOptions.map((value) => (
-									<option value={value}>{value}</option>
+									<option key={value} value={value}>
+										{value}
+									</option>
 								))}
 							</select>
 						</div>
@@ -347,7 +349,7 @@ const Registration = () => {
 								type='password'
 								placeholder='password confirmation'
 								{...register("passwordConfirmation", {
-									required: "Please re-enter your password.",
+									required: "please re-enter your passworD",
 									validate: {
 										matchPassword: (value) =>
 											value !== "password" ?? "Passwords do not match.",
@@ -404,13 +406,13 @@ const Registration = () => {
 								<a
 									href='#'
 									// style does not seem to work
-									className='px-1 text-indigo-700 dark:text-indigo-500 hover:underline focus:outline-indigo-700'>
+									className='px-1 text-cyan-500 hover:underline focus:outline-indigo-700'>
 									terms and conditionS
 								</a>
 								.
 							</label>
 						</div>
-						<p className='mt-2 text-sm text-right text-indigo-700'>
+						<p className='mt-2 ml-[2.2rem] text-sm text-left text-indigo-700'>
 							{errors.terms?.message}
 						</p>
 					</div>

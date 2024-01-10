@@ -1,12 +1,10 @@
 import BookTitleAndDescription from "./BookTitleAndDescription";
-// import BookCover from "./BookCover";
-// import BookExtraInfo from "./BookExtraInfo";
-// import { AddBookInfo } from "../types/AddBookTypes";
+import BookCover from "./BookCover";
+import BookExtraInfo from "./BookExtraInfo";
 import { ApiBookInfo } from "../types/ApiBookTypes";
 
 type Props = {
 	book: ApiBookInfo;
-	// addBooks: AddBookInfo;
 };
 
 const Book = ({ book }: Props) => {
@@ -16,19 +14,19 @@ const Book = ({ book }: Props) => {
 				title={book.title}
 				description={book.description}
 			/>
-			{/* <BookCover cover={addBooks.cover} alt={addBooks.title} />
+			<BookCover cover={book.cover} alt={book.title} />
 			<BookExtraInfo
-				author={addBooks.author}
-				illustrator={addBooks.illustrator}
+				author={book.author}
+				illustrator={book.illustrator}
 				publisher={{
-					oName: addBooks.publisher.oName,
-					website: addBooks.publisher.website,
-					year: addBooks.publisher.year,
+					oName: book.oName,
+					website: book.website,
+					year: book.year,
 				}}
-				oLan={addBooks.oLan}
-				date={addBooks.date}
-				isbn={addBooks.isbn}
-			/> */}
+				original_language={book.original_language}
+				print_date={book.print_date}
+				ISBN={book.ISBN}
+			/>
 		</section>
 	);
 };

@@ -13,18 +13,18 @@ type Props = {
 		website?: string;
 		year?: number;
 	};
-	oLan: string;
-	date: string;
-	isbn: string;
+	original_language: string;
+	print_date: string;
+	ISBN: string;
 };
 
 const BookExtraInfo = ({
 	author,
 	illustrator,
 	publisher,
-	oLan,
-	date,
-	isbn,
+	original_language,
+	print_date,
+	ISBN,
 }: Props) => {
 	// if (!publisher.website) {
 	// 	publisher.website = "default";
@@ -43,9 +43,9 @@ const BookExtraInfo = ({
 					website={publisher.website}
 					year={publisher.year}
 				/>
-				<OriginalLanguage oLan={oLan} />
-				<PrintDate date={date} />
-				<ISBNNumber isbn={isbn} />
+				<OriginalLanguage oLan={original_language} />
+				<PrintDate date={print_date} />
+				<ISBNNumber isbn={ISBN} />
 			</div>
 		</div>
 	);
