@@ -39,9 +39,11 @@ const Login = () => {
 		try {
 			await http.get("/sanctum/csrf-cookie");
 			const response = await http.post("api/auth/login", data);
-			const userData = response.data;
+			const userData = response.data.user;
+			console.log(userData);
 
-			setAuth({ ...userData, isAdmin: userData.isAdmin ?? false });
+			setAuth({ ...userData, isAdmin: userData.is_admin ?? false });
+			// setAuth({ ...userData, isAdmin: userData.isAdmin ?? false });
 			// await getInitialAuth(setAuth);
 			// await getInitialAuth(); // Fetch additional user information
 			navigate(from);
@@ -134,6 +136,7 @@ const Login = () => {
 					</button>
 				</form>
 			</main>
+
 			<DevTool control={control} />
 		</>
 	);

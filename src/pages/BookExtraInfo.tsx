@@ -9,7 +9,7 @@ type Props = {
 	author: string;
 	illustrator: string;
 	publisher: {
-		oName: string;
+		name: string;
 		website?: string;
 		year?: number;
 	};
@@ -39,7 +39,7 @@ const BookExtraInfo = ({
 				<AuthorBtn author={author} />
 				<IllustratorBtn illustrator={illustrator} />
 				<Publisher
-					oName={publisher.oName}
+					name={publisher.name}
 					website={publisher.website}
 					year={publisher.year}
 				/>

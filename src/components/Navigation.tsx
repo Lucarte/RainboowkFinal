@@ -1,17 +1,12 @@
-import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { AuthContext } from "../context/AuthProvider";
 import SpreadMenu from "./SpreadMenu";
 
 type Props = {
 	isActive: boolean;
 	setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
-	handleLogout: () => void;
 };
 
-const Navigation = ({ isActive, setIsActive, handleLogout }: Props) => {
-	const { auth } = useContext(AuthContext);
-
+const Navigation = ({ isActive, setIsActive }: Props) => {
 	return (
 		<>
 			<nav className={isActive ? "active" : "flex"}>
@@ -25,20 +20,7 @@ const Navigation = ({ isActive, setIsActive, handleLogout }: Props) => {
 					<li>
 						<NavLink to='/registration'>Register</NavLink>
 					</li>
-					{auth.id ? (
-						<li>
-							<div>
-								<p>You are logged in as: {auth.username}</p>
-								<button className='text-orange-500' onClick={handleLogout}>
-									Logout
-								</button>
-							</div>
-						</li>
-					) : (
-						<li>
-							<NavLink to='/login'>Login</NavLink>
-						</li>
-					)}
+
 					<li>
 						<button className='px-4 py-2 mx-12 text-sm text-white bg-indigo-500 rounded-md w-fit hover:text-indigo-400'>
 							Add Book

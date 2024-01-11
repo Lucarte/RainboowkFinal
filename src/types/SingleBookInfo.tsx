@@ -1,4 +1,4 @@
-export type ApiBookInfo = {
+export type SingleBookInfo = {
 	id: number;
 	user_id: number;
 	ISBN: string;

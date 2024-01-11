@@ -28,7 +28,7 @@ const RootLayout = () => {
 
 	const handleLogout = async () => {
 		try {
-			await http.post("/api/auth/logout");
+			await http.post("/api/auth/user/logout");
 			setAuth(defaultAuth);
 		} catch {
 			//
@@ -43,7 +43,7 @@ const RootLayout = () => {
 				setIsActive={setIsActive}
 			/>
 			{/* <BookCatalog /> */}
-			<Footer />
+			<Footer handleLogout={handleLogout} />
 		</>
 	);
 };

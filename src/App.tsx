@@ -27,7 +27,7 @@ import Illustrators from "./pages/Illustrators";
 import Illustrator from "./pages/Illustrator";
 import Publishers from "./pages/Publishers";
 import Books from "./pages/Books";
-// import Book from "./pages/Book";
+import Book from "./pages/Book";
 import Buch from "./pages/Buch";
 import Buecher from "./pages/Buecher";
 import Libro from "./pages/Libro";
@@ -52,8 +52,7 @@ const router = createBrowserRouter(
 				<Route path='/publishers' element={<Publishers />} />
 				<Route path='/publisher/:name' element={<Publisher />} />
 				<Route path='/books' element={<Books />} />
-				// Not sure about this route right now.
-				{/* <Route path='/book/:title' element={<Book />} /> */}
+				<Route path='/book/:title' element={<Book />} />
 				<Route path='/libros' element={<Libros />} />
 				<Route path='/libro/:title' element={<Libro />} />
 				<Route path='/livres' element={<Livres />} />
@@ -74,10 +73,6 @@ const router = createBrowserRouter(
 					<Route path='/user/:username' element={<User />} />
 				</Route>
 				<Route path='/login' element={<Login />} />
-				{/* <Route path='/blog'>
-					<Route index element={<Blog />} loader={blogloader} />
-					<Route path=':slug' element={<Blogpost />} loader={blopostLoader} />
-				</Route> */}
 				// If I put it inside the RootLayout there is access to the nav links!
 				<Route path='*' element={<NotFound />} />
 			</Route>

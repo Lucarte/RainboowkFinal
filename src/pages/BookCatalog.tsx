@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import Book from "./Book";
-import { ApiBookInfo } from "../types/ApiBookTypes";
+import { ApiBookInfo } from "../types/SingleBookInfo";
 import CatalogLanguage from "./CatalogLanguage";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import http from "../utils/http";

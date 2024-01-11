@@ -10,8 +10,18 @@ const SpreadMenu = ({ setIsActive }: Props) => {
 		setIsActive(false);
 	};
 	return (
-		<div className='font-bold font-comfortaa pb-28 flex flex-col fixed inset-0 list-none items-end p-10 justify-evenly bg-cyan-500 text-white bg-opacity-80 z-10'>
-			{/* <div className='bg-white p-4 rounded-md'> */}
+		<div className='fixed inset-0 z-10 flex flex-col items-end p-10 font-bold text-white list-none font-comfortaa pb-28 justify-evenly bg-cyan-500 bg-opacity-80'>
+			{/* <div className='p-4 bg-white rounded-md'> */}
+			<li>
+				<button className='px-4 py-2 mx-12 text-sm text-white bg-indigo-500 rounded-md w-fit hover:text-indigo-400'>
+					Add Book
+					<NavLink to='/book/create'></NavLink>
+					{/* <NavLink to='/book/create'>English</NavLink> */}
+					{/* <NavLink to='/libro/create'>Spanish</NavLink>
+							<NavLink to='/livre/create'>French</NavLink>
+							<NavLink to='/buch/create'>German</NavLink> */}
+				</button>
+			</li>
 			<li>
 				<NavLink to='/' onClick={handleNavLinkClick}>
 					homE

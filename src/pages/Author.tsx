@@ -1,19 +1,7 @@
 import { useEffect, useState } from "react";
 import http from "../utils/http";
 import { useParams } from "react-router-dom";
-
-type AuthorInfo = {
-	first_name: string;
-	last_name: string;
-	date_of_birth?: string;
-	date_of_death?: string;
-	biography?: string;
-	nationality?: string;
-	contact_email: string;
-	website?: string;
-	awards_and_honors?: string;
-	slug: string;
-};
+import { AuthorInfo } from "../types/AuthorInfo";
 
 const Author = () => {
 	const { slug } = useParams();

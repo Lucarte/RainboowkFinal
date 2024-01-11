@@ -46,10 +46,10 @@ const Registration = () => {
 
 	// Will take place if all fields are validated
 	const onSubmit = async (data: FormValues) => {
+		console.log(data);
 		try {
 			// Request CSRF token
 			await http.get("/sanctum/csrf-cookie");
-
 			// Make the registration request
 			const response = await http.post("api/auth/register", data);
 
@@ -106,8 +106,8 @@ const Registration = () => {
 
 	// Options for my Locality (radio input) Field
 	const localityOptions = [
-		{ value: "within_germany", label: "within germanY" },
-		{ value: "beyond_germany", label: "beyond germanY" },
+		{ value: "within_Germany", label: "within germanY" },
+		{ value: "beyond_Germany", label: "beyond germanY" },
 	];
 
 	// Options for my PersonRole Select Field
@@ -321,9 +321,9 @@ const Registration = () => {
 										lowercase: (value) =>
 											/^(?=.*[a-z])/.test(value) ||
 											"Password must have at least one small letter.",
-										uppercase: (value) =>
-											/^(?=.*[A-Z])/.test(value) ||
-											"Password must have at least one capital letter.",
+										// uppercase: (value) =>
+										// 	/^(?=.*[A-Z])/.test(value) ||
+										// 	"Password must have at least one capital letter.",
 										number: (value) =>
 											/^(?=.*\d)/.test(value) ||
 											"Password must have at least one number.",
