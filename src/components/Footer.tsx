@@ -33,7 +33,7 @@ const Footer = ({ handleLogout }: Props) => {
 					) : (
 						// 'Invisitble' for now
 						<li className='flex items-center'>
-							<button className='h-8 px-3 text-sm font-bold bg-indigo-200 rounded-md'>
+							<button className='h-8 px-3 text-sm font-semibold bg-indigo-200 rounded-md'>
 								<NavLink to='/login'>LOGIN</NavLink>
 							</button>
 						</li>

@@ -1,28 +1,28 @@
 import { useForm } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
+// import { DevTool } from "@hookform/devtools";
 import { AuthContext } from "../context/AuthProvider";
 import { useLocation, useNavigate } from "react-router-dom";
 import http from "../utils/http";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 type FormValues = {
 	pronouns?: string;
-	salutation: "Dear individual" | "Dear person" | "Dear child" | "Mrs." | "Mr";
+	salutation: "Dear Individual" | "Dear Person" | "Dear child" | "Mrs." | "Mr";
 	username: string;
 	email: string;
 	dob: string;
-	locality: "within Germany" | "outside Germany";
+	locality: "Within Germany" | "Outside Germany";
 	personRole:
-		| "author"
-		| "child"
-		| "librarian"
-		| "opposed_to_the_biodiversity"
-		| "publisher_representative"
-		| "activist"
-		| "binary_world_defender"
-		| "journalist"
-		| "curious_person";
-	publicity: "mouthword" | "online_search" | "other";
+		| "Author"
+		| "Child"
+		| "Librarian"
+		| "Opposed to the Biodiversity"
+		| "Publisher Representative"
+		| "Activist"
+		| "Binary World Defender"
+		| "Journalist"
+		| "Curious Person";
+	publicity: "Mouthword" | "Online Search" | "Other";
 	password: string;
 	passwordConfirmation: string;
 	terms: boolean;
@@ -31,18 +31,15 @@ type FormValues = {
 const Registration = () => {
 	const { auth, setAuth } = useContext(AuthContext);
 	const navigate = useNavigate();
-	const { state } = useLocation();
+	// const { state } = useLocation();
 	const form = useForm<FormValues>();
 	const {
 		register,
-		control,
+		// control,
 		handleSubmit,
 		formState: { errors, isSubmitting },
 		setError,
 	} = form;
-
-	// if our 'from' state is empty, then we take the user home
-	const { from = "/" } = state || {};
 
 	// Will take place if all fields are validated
 	const onSubmit = async (data: FormValues) => {
@@ -57,17 +54,26 @@ const Registration = () => {
 			const userData = response.data;
 
 			// Update the authentication context
-			setAuth({ ...userData, isAdmin: userData.isAdmin ?? false });
+			setAuth({ ...userData, isAdmin: userData.is_admin ?? false });
 
-			// Log success and navigate
-			console.log("Registration Successful", auth);
-			navigate(from);
+			// First success message, then navigate to the login
+			navigate("/login", {
+				state: {
+					successMessage:
+						"You are now part of the RainBOOwK family! Now go ahead and...",
+				},
+			});
+
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (exception: any) {
 			// Handle registration errors
 			const errors = exception.response.data.errors;
-			console.log(exception.response);
+
 			for (const [fieldName, errorList] of Object.entries(errors)) {
+				const fieldErrors = (errorList as any[]).map((message) => ({
+					message,
+				}));
+				setError(fieldName as keyof FormValues, fieldErrors[0]);
 				// Define the type for your form fields
 				type Field =
 					| "salutation"
@@ -106,8 +112,8 @@ const Registration = () => {
 
 	// Options for my Locality (radio input) Field
 	const localityOptions = [
-		{ value: "within_Germany", label: "within germanY" },
-		{ value: "beyond_Germany", label: "beyond germanY" },
+		{ value: "Within Germany", label: "within germanY" },
+		{ value: "Beyond Germany", label: "beyond germanY" },
 	];
 
 	// Options for my PersonRole Select Field
@@ -352,7 +358,9 @@ const Registration = () => {
 									required: "please re-enter your passworD",
 									validate: {
 										matchPassword: (value) =>
-											value !== "password" ?? "Passwords do not match.",
+											value === form.getValues("password") ||
+											"Passwords do not match.",
+										// value !== "password" ?? "Passwords do not match.",
 									},
 								})}
 							/>
@@ -396,7 +404,7 @@ const Registration = () => {
 								// className='w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
 								className='w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 focus:ring-purple-500 focus:border-indigo-700 focus:outline-none'
 								aria-invalid={errors.terms ? "true" : "false"}
-								type='radio'
+								type='checkbox'
 								{...register("terms", {
 									required: "please accept the terms and conditionS",
 								})}
@@ -426,8 +434,8 @@ const Registration = () => {
 					</div>
 				</form>
 			</article>
-			{/* </main> */}
-			<DevTool control={control} />
+
+			{/* <DevTool control={control} /> */}
 		</>
 	);
 };

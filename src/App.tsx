@@ -41,6 +41,7 @@ import Publisher from "./pages/Publisher";
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<>
+			// All endpoints except: Login / Registration / Home NEED STYLING
 			<Route path='/' element={<RootLayout />} errorElement={<RootError />}>
 				// Open routes
 				<Route index element={<Home />} />
@@ -54,24 +55,37 @@ const router = createBrowserRouter(
 				<Route path='/books' element={<Books />} />
 				<Route path='/book/:title' element={<Book />} />
 				<Route path='/libros' element={<Libros />} />
-				<Route path='/libro/:title' element={<Libro />} />
+				<Route path='/libro/:title' element={<Libro />} /> // Funktiontiert noch
+				nicht
 				<Route path='/livres' element={<Livres />} />
-				<Route path='/livre/:title' element={<Livre />} />
+				<Route path='/livre/:title' element={<Livre />} /> // Funktiontiert noch
+				nicht
 				<Route path='/buecher' element={<Buecher />} />
-				<Route path='/buch/:title' element={<Buch />} />
-				<Route path='/about' element={<About />} />
+				<Route path='/buch/:title' element={<Buch />} /> // Funktiontiert noch
+				nicht
+				<Route path='/about' element={<About />} /> // Needs content
 				<Route path='/catalog' element={<BookCatalog />} />
 				<Route path='/authors' element={<Authors />} />
 				<Route path='/illustrators' element={<Illustrators />} />
 				<Route path='/publishers' element={<Publishers />} />
 				// For admin
 				<Route element={<ProtectedLayout isAdmin={true} />}>
-					<Route path='/users' element={<UsersList />} />
+					<Route path='/users' element={<UsersList />} /> // need to fetch users
 				</Route>
 				// For signed users
 				<Route element={<ProtectedLayout isAdmin={false} />}>
-					<Route path='/user/:username' element={<User />} />
+					<Route path='/user/:username' element={<User />} /> // Funktiontiert
+					noch nicht
 				</Route>
+				{/* 
+				NEED
+				TO
+				ADD
+				ALL
+				THE 
+				OTHER
+				ROUTES
+				*/}
 				<Route path='/login' element={<Login />} />
 				// If I put it inside the RootLayout there is access to the nav links!
 				<Route path='*' element={<NotFound />} />

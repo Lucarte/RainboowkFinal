@@ -73,6 +73,11 @@ const Login = () => {
 					noValidate
 					onSubmit={handleSubmit(onSubmit, onError)}
 					className='flex flex-col w-56 gap-6 md:gap-8'>
+					{state?.successMessage && (
+						<div className='py-4 mb-4 text-lg font-semibold text-center text-cyan-500'>
+							{state.successMessage}
+						</div>
+					)}
 					<h1 className='p-4 pb-8 text-xl font-bold text-center'>L o G i N</h1>
 					<div className='flex flex-col items-end gap-1 md:gap-2'>
 						<label htmlFor='email'>: e-maiL</label>
