@@ -1,4 +1,5 @@
 export type SingleBookInfo = {
+	cover: Cover;
 	id: number;
 	user_id: number;
 	ISBN: string;
@@ -11,7 +12,6 @@ export type SingleBookInfo = {
 	original_language: string;
 	created_at: string;
 	updated_at: string;
-	cover: string;
 	alt: string;
 	author: string;
 	illustrator: string;
@@ -19,4 +19,12 @@ export type SingleBookInfo = {
 	oName: string;
 	website?: string;
 	year?: number;
+};
+
+export type Cover = {
+	id: number;
+	user_id: number;
+	book_id: number;
+	libro_id: number | null;
+	livre_id: number | null;
 };

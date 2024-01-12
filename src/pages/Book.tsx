@@ -1,20 +1,24 @@
-import BookCover from "./BookCover";
-import { SingleBookInfo } from "../types/SingleBookInfo";
-import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { SingleBookInfo } from "../types/SingleBookInfo";
 import http from "../utils/http";
 
 const Book = () => {
 	const { title } = useParams();
 	const [book, setBook] = useState<SingleBookInfo | null>(null);
+	const [coverPath, setCoverPath] = useState<string | null>(null);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
 				const response = await http.get(`/api/book/${title}`);
-
 				setBook(response.data.book);
-				console.log(response);
+
+				// Access the cover information
+				const cover = response.data.book.cover;
+
+				// Set the cover path in the state
+				setCoverPath(cover.image_path);
 			} catch (error) {
 				console.error("Error fetching data:", error);
 			}
@@ -25,7 +29,7 @@ const Book = () => {
 
 	return (
 		<>
-			<figure className='flex flex-col'>
+			<figure className='flex flex-col pb-36'>
 				{book && (
 					<div>
 						<div className='flex flex-col gap-3 mt-10'>
@@ -33,15 +37,19 @@ const Book = () => {
 								<h2 className='font-bold'>Title: </h2>
 								<h1>{book.title}</h1>
 							</div>
+							{coverPath ? (
+								<img
+									className='w-56'
+									src={`http://localhost/api/cover/${book.cover.id}`}
+									alt='Cover'
+								/>
+							) : (
+								<p>Cover not found --from Book.tsx</p>
+							)}
 							<div className='flex flex-col gap-2'>
 								<h2 className='font-bold'>Description: </h2>
 								<p>{book.description}</p>
 							</div>
-							<div className='flex flex-col gap-2'>
-								<h2 className='font-bold'>Cover: </h2>
-								<p>{book.cover}</p>
-							</div>
-							<BookCover cover={book.cover} alt={book.title} />
 						</div>
 						<ul>
 							{/* <BookExtraInfo
@@ -64,8 +72,6 @@ const Book = () => {
 				)}
 			</figure>
 		</>
-		// <section className='flex flex-col gap-6'>
-		// </section>
 	);
 };
 
