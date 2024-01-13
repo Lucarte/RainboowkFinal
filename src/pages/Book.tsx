@@ -5,8 +5,8 @@ import http from "../utils/http";
 
 const Book = () => {
 	const { title } = useParams();
-	const [book, setBook] = useState<SingleBookInfo | null>(null);
-	const [coverPath, setCoverPath] = useState<string | null>(null);
+	const [book, setBook] = useState<SingleBookInfo>();
+	const [coverPath, setCoverPath] = useState<string>();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -50,24 +50,24 @@ const Book = () => {
 								<h2 className='font-bold'>Description: </h2>
 								<p>{book.description}</p>
 							</div>
+							<div className='flex flex-col gap-2'>
+								<h2 className='font-bold'>Author: </h2>
+								{book.authors.map((author) => (
+									<p key={author.id}>{author.fullname}</p>
+								))}
+							</div>
+							<div className='flex flex-col gap-2'>
+								<h2 className='font-bold'>Illustrator: </h2>
+								{book.illustrators.map((illustrator) => (
+									<p key={illustrator.id}>{illustrator.fullname}</p>
+								))}
+							</div>
+							<div className='flex flex-col gap-2'>
+								<h2 className='font-bold'>Publisher: </h2>
+								<p>{book.publisher.name}</p>
+							</div>
 						</div>
-						<ul>
-							{/* <BookExtraInfo
-								author={book.author}
-								illustrator={book.illustrator}
-								publisher={{
-									name: book.oName,
-									website: book.website,
-									year: book.year,
-								}}
-								original_language={book.original_language}
-								print_date={book.print_date}
-								ISBN={book.ISBN}
-							/> */}
-							{/* <li>{book.author}</li>
-							<li>{book.illustrator}</li>
-							<li>{book.publisher}</li> */}
-						</ul>
+						<ul></ul>
 					</div>
 				)}
 			</figure>
