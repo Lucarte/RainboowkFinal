@@ -42,7 +42,11 @@ const Login = () => {
 			const userData = response.data.user;
 			console.log(userData);
 
-			setAuth({ ...userData, isAdmin: userData.is_admin ?? false });
+			setAuth({
+				...userData,
+				isAuthenticated: true,
+				isAdmin: userData.is_admin ?? false,
+			});
 			// setAuth({ ...userData, isAdmin: userData.isAdmin ?? false });
 			// await getInitialAuth(setAuth);
 			// await getInitialAuth(); // Fetch additional user information
@@ -51,12 +55,18 @@ const Login = () => {
 		} catch (exception: any) {
 			const errors = exception.response.data.errors;
 
-			for (const [fieldName, errorList] of Object.entries(errors)) {
-				type Field = "email" | "password" | "root";
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				const errors = (errorList as any[]).map((message) => ({ message }));
-				console.log(fieldName, errors);
-				setError(fieldName as Field, errors[0]);
+			if (errors) {
+				for (const [fieldName, errorList] of Object.entries(errors)) {
+					type Field = "email" | "password";
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					const errors = (errorList as any[]).map((message) => ({ message }));
+					setError(fieldName as Field, errors[0]);
+				}
+			} else {
+				// Handle generic error, e.g., server down or network error
+				setError("root", {
+					message: "Wrong Credentials, TRY AGAIN!",
+				});
 			}
 		}
 	};
@@ -78,6 +88,7 @@ const Login = () => {
 							{state.successMessage}
 						</div>
 					)}
+					<p className='text-center text-indigo-500'>{errors.root?.message}</p>
 					<h1 className='p-4 pb-8 text-xl font-bold text-center'>L o G i N</h1>
 					<div className='flex flex-col items-end gap-1 md:gap-2'>
 						<label htmlFor='email'>: e-maiL</label>
@@ -132,7 +143,6 @@ const Login = () => {
 						/>
 						<p className='text-cyan-500'>{errors.password?.message}</p>
 					</div>
-
 					<br />
 					<button
 						className='px-4 py-2 text-white bg-indigo-500 rounded-md w-fit hover:text-indigo-400 focus:outline-indigo-900 '

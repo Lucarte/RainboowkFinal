@@ -8,6 +8,7 @@ import {
 // Layouts
 import RootLayout from "./layouts/RootLayout";
 import ProtectedLayout from "./layouts/ProtectedLayout";
+import AdminLayout from "./layouts/AdminLayout";
 
 // Errors
 import RootError from "./errors/RootError";
@@ -16,8 +17,6 @@ import RootError from "./errors/RootError";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
-// import Dashboard from "./pages/Dashboard";
-// import Unauthorized from "./pages/Unauthorized";
 import Registration from "./pages/Registration";
 import UsersList from "./pages/UserList";
 import User from "./pages/User";
@@ -37,6 +36,7 @@ import Livre from "./pages/Livre";
 import About from "./pages/About";
 import BookCatalog from "./pages/BookCatalog";
 import Publisher from "./pages/Publisher";
+import BookForm from "./pages/BookForm";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -46,6 +46,7 @@ const router = createBrowserRouter(
 				// Open routes
 				<Route index element={<Home />} />
 				<Route path='/registration' element={<Registration />} />
+				<Route path='/login' element={<Login />} />
 				<Route path='/authors' element={<Authors />} />
 				<Route path='/author/:slug' element={<Author />} />
 				<Route path='/illustrators' element={<Illustrators />} />
@@ -69,13 +70,20 @@ const router = createBrowserRouter(
 				<Route path='/illustrators' element={<Illustrators />} />
 				<Route path='/publishers' element={<Publishers />} />
 				// For admin
-				<Route element={<ProtectedLayout isAdmin={true} />}>
+				<Route element={<AdminLayout />}>
 					<Route path='/users' element={<UsersList />} /> // need to fetch users
 				</Route>
-				// For signed users
-				<Route element={<ProtectedLayout isAdmin={false} />}>
+				// For signed users (OR admin)
+				<Route element={<ProtectedLayout />}>
+					<Route path='/auth/book/form' element={<BookForm />} /> //
+					Funktiontiert so: /auth/book/form
 					<Route path='/user/:username' element={<User />} /> // Funktiontiert
 					noch nicht
+					<Route path='/book/create' element={<BookForm />} /> // Funktiontiert
+					<Route path='/book/update/:title' element={<BookForm />} /> //
+					Funktiontiert noch nicht
+					<Route path='/book/delete/:title' element={<BookForm />} /> //
+					Funktiontiert noch nicht
 				</Route>
 				{/* 
 				NEED
@@ -86,7 +94,6 @@ const router = createBrowserRouter(
 				OTHER
 				ROUTES
 				*/}
-				<Route path='/login' element={<Login />} />
 				// If I put it inside the RootLayout there is access to the nav links!
 				<Route path='*' element={<NotFound />} />
 			</Route>

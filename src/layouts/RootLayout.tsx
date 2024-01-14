@@ -37,11 +37,7 @@ const RootLayout = () => {
 
 	return (
 		<>
-			<Header
-				handleLogout={handleLogout}
-				isActive={isActive}
-				setIsActive={setIsActive}
-			/>
+			<Header isActive={isActive} setIsActive={setIsActive} />
 			{/* <BookCatalog /> */}
 			<Footer handleLogout={handleLogout} />
 		</>
