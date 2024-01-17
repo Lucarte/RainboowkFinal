@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import Book from "./Book";
-import { ApiBookInfo } from "../types/SingleBookInfo";
+import { SingleBookInfo } from "../types/SingleBookInfo";
 import CatalogLanguage from "./CatalogLanguage";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import http from "../utils/http";
@@ -15,7 +15,7 @@ type CatalogLan = string | null;
 const BookCatalog = () => {
 	// Define unsere State
 	const [search, setSearch] = useLocalStorage("bookSearch", "");
-	const [books, setBooks] = useState<ApiBookInfo[]>([]);
+	const [books, setBooks] = useState<SingleBookInfo[]>([]);
 
 	// only check for true. Default false = checkbox unclicked
 	const [availableOnly, setAvailableOnly] = useState<{
@@ -45,12 +45,7 @@ const BookCatalog = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await http.get("api/catalog", {
-					headers: {
-						Accept: "application/json",
-					},
-					maxRedirects: 0, // Disable redirects
-				});
+				const response = await http.get("/catalog", {});
 
 				console.log("API Response:", response);
 
@@ -72,20 +67,21 @@ const BookCatalog = () => {
 		fetchData();
 	}, []);
 
-	// useEffect(() => {
-	// 	const fetchData = async () => {
-	// 		try {
-	// 			// Adjust the API endpoint based on your Laravel backend
-	// 			const response = await axios.get("api/catalog");
-	// 			console.log("API response:", response.data); // Log the response
-	// 			setBooks(response.data);
-	// 		} catch (error) {
-	// 			console.error("Error fetching data:", error);
-	// 		}
-	// 	};
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				// Adjust the API endpoint based on your Laravel backend
+				const response = await http("/catalog");
+				console.log("API response:", response.data); // Log the response
+				setBooks(response.data);
+				console.log("insideuseEffect:", response);
+			} catch (error) {
+				console.error("Error fetching data:", error);
+			}
+		};
 
-	// 	fetchData();
-	// }, []); // Empty dependency array to fetch data only on mount
+		fetchData();
+	}, []); // Empty dependency array to fetch data only on mount
 
 	let lastCatalogLan: CatalogLan = null;
 	const rows: JSX.Element[] = [];
@@ -115,7 +111,7 @@ const BookCatalog = () => {
 				/>
 			);
 		}
-		rows.push(<Book key={book.title} book={book} />);
+		rows.push(<Book key={book.title} />);
 		lastCatalogLan = book.original_language;
 	});
 	// // Link to take users to the Add Book Form

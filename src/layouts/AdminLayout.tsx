@@ -10,7 +10,11 @@ const AdminLayout = () => {
 		<Outlet />
 	) : (
 		<>
-			<Navigate to={"/login"} state={{ from: location }} replace />
+			<Navigate
+				to={"/login"}
+				state={{ from: location, message: "ADMIN ACCESS ONLY" }}
+				replace
+			/>
 			{/* <Navigate to={"/unauthorized"} state={{ from: location }} replace /> */}
 		</>
 	);

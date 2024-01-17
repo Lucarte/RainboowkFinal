@@ -9,7 +9,11 @@ const ProtectedLayout = () => {
 	return auth.isAuthenticated ? (
 		<Outlet />
 	) : (
-		<Navigate to='/login' state={{ from: location }} replace />
+		<Navigate
+			to='/login'
+			state={{ from: location, message: "First login to continue" }}
+			replace
+		/>
 	);
 };
 

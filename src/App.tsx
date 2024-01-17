@@ -37,6 +37,7 @@ import About from "./pages/About";
 import BookCatalog from "./pages/BookCatalog";
 import Publisher from "./pages/Publisher";
 import BookForm from "./pages/BookForm";
+import AuthorForm from "./pages/AuthorForm";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -56,34 +57,29 @@ const router = createBrowserRouter(
 				<Route path='/books' element={<Books />} />
 				<Route path='/book/:title' element={<Book />} />
 				<Route path='/libros' element={<Libros />} />
-				<Route path='/libro/:title' element={<Libro />} /> // Funktiontiert noch
-				nicht
+				<Route path='/libro/:title' element={<Libro />} />
 				<Route path='/livres' element={<Livres />} />
-				<Route path='/livre/:title' element={<Livre />} /> // Funktiontiert noch
-				nicht
+				<Route path='/livre/:title' element={<Livre />} />
 				<Route path='/buecher' element={<Buecher />} />
-				<Route path='/buch/:title' element={<Buch />} /> // Funktiontiert noch
-				nicht
-				<Route path='/about' element={<About />} /> // Needs content
+				<Route path='/buch/:title' element={<Buch />} />
+				<Route path='/about' element={<About />} />
 				<Route path='/catalog' element={<BookCatalog />} />
 				<Route path='/authors' element={<Authors />} />
 				<Route path='/illustrators' element={<Illustrators />} />
 				<Route path='/publishers' element={<Publishers />} />
 				// For admin
 				<Route element={<AdminLayout />}>
-					<Route path='/users' element={<UsersList />} /> // need to fetch users
+					<Route path='/users' element={<UsersList />} />
 				</Route>
 				// For signed users (OR admin)
 				<Route element={<ProtectedLayout />}>
-					<Route path='/auth/book/form' element={<BookForm />} /> //
+					<Route path='/auth/book/form' element={<BookForm />} />
 					Funktiontiert so: /auth/book/form
-					<Route path='/user/:username' element={<User />} /> // Funktiontiert
-					noch nicht
-					<Route path='/book/create' element={<BookForm />} /> // Funktiontiert
-					<Route path='/book/update/:title' element={<BookForm />} /> //
-					Funktiontiert noch nicht
-					<Route path='/book/delete/:title' element={<BookForm />} /> //
-					Funktiontiert noch nicht
+					<Route path='/user/:username' element={<User />} />
+					<Route path='/auth/book/create' element={<BookForm />} />
+					<Route path='/auth/book/update/:title' element={<BookForm />} />
+					<Route path='/auth/book/delete/:title' element={<BookForm />} />
+					<Route path='/auth/create_author' element={<AuthorForm />} />
 				</Route>
 				{/* 
 				NEED

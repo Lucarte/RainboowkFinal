@@ -11,11 +11,11 @@ type FormValues = {
 };
 
 const Login = () => {
+	const location = useLocation();
+	const message = location.state?.message;
 	const { auth, setAuth } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const { state } = useLocation();
-
-	// console.log(auth);
 
 	const form = useForm<FormValues>();
 	const {
@@ -47,9 +47,6 @@ const Login = () => {
 				isAuthenticated: true,
 				isAdmin: userData.is_admin ?? false,
 			});
-			// setAuth({ ...userData, isAdmin: userData.isAdmin ?? false });
-			// await getInitialAuth(setAuth);
-			// await getInitialAuth(); // Fetch additional user information
 			navigate(from);
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (exception: any) {
@@ -83,6 +80,9 @@ const Login = () => {
 					noValidate
 					onSubmit={handleSubmit(onSubmit, onError)}
 					className='flex flex-col w-56 gap-6 md:gap-8'>
+					<h2 className='py-4 mb-4 text-lg font-semibold text-center text-cyan-500'>
+						{message}
+					</h2>
 					{state?.successMessage && (
 						<div className='py-4 mb-4 text-lg font-semibold text-center text-cyan-500'>
 							{state.successMessage}
