@@ -7,6 +7,10 @@ type Props = {
 };
 
 const Navigation = ({ isActive, setIsActive }: Props) => {
+	const handleNavLinkClick = () => {
+		// Set isActive to false when a NavLink is clicked
+		setIsActive(false);
+	};
 	return (
 		<>
 			<nav className={isActive ? "active" : "flex"}>
@@ -22,14 +26,15 @@ const Navigation = ({ isActive, setIsActive }: Props) => {
 					</li>
 
 					<li>
-						<button className='px-4 py-2 mx-12 text-sm text-white bg-indigo-500 rounded-md w-fit hover:text-indigo-400'>
-							Add Book
-							<NavLink to='/book/create'></NavLink>
-							{/* <NavLink to='/book/create'>English</NavLink> */}
-							{/* <NavLink to='/libro/create'>Spanish</NavLink>
+						<NavLink to='/auth/book/form' onClick={handleNavLinkClick}>
+							<button className='px-4 py-2 mx-12 text-sm text-white bg-indigo-500 rounded-md w-fit hover:text-indigo-400'>
+								ADD BOOK
+								{/* <NavLink to='/book/create'>English</NavLink> */}
+								{/* <NavLink to='/libro/create'>Spanish</NavLink>
 							<NavLink to='/livre/create'>French</NavLink>
-							<NavLink to='/buch/create'>German</NavLink> */}
-						</button>
+						<NavLink to='/buch/create'>German</NavLink> */}
+							</button>
+						</NavLink>
 					</li>
 				</ul>
 				<button

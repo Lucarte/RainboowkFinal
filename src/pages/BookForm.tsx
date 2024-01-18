@@ -5,38 +5,78 @@ import {
 	FieldValues,
 } from "react-hook-form";
 import { AuthContext } from "../context/AuthProvider";
-import { useNavigate } from "react-router-dom";
 import http from "../utils/http";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AxiosError } from "axios";
 import { SingleBookInfo } from "../types/SingleBookInfo";
 import AuthorForm from "./AuthorForm";
+import {
+	AuthorFormProvider,
+	useAuthorFormContext,
+} from "../context/AuthorFormContext";
 
 const BookForm = () => {
+	const { isAuthorFormVisible, setIsAuthorFormVisible } =
+		useAuthorFormContext();
+
+	const handleCloseAuthorForm = () => {
+		setIsAuthorFormVisible(false);
+	};
+	const [authorCheck, setAuthorCheck] = useState(false);
 	const { auth } = useContext(AuthContext);
+
 	const form = useForm<SingleBookInfo>({
 		defaultValues: {
 			authors: [{ first_name: "", last_name: "" }],
 		},
 	});
+
+	const handleInputClick = () => {
+		// Set AuthorForm visibility to false when the input field is clicked
+		setIsAuthorFormVisible(false);
+	};
 	const { handleSubmit, register, control, formState, setError } = form;
 	const { errors, isSubmitting } = formState;
-
-	const { fields: authorFields, append: appendAuthor } = useFieldArray({
+	const { fields: authorFields } = useFieldArray({
 		control,
 		name: "authors",
 	});
 
-	// State to manage whether to show the AuthorForm or not
-	const [showAuthorForm, setShowAuthorForm] = useState(false);
 	const [authorExists, setAuthorExists] = useState(false);
 
-	// useEffect for logging when showAuthorForm changes
-	useEffect(() => {
-		console.log("State updated:", showAuthorForm);
-	}, [showAuthorForm]);
+	const handleCheckAuthor = async (authorIndex) => {
+		// Call the checkAuthorExists function
+		const authorExists = await checkAuthorExists(authorIndex);
 
-	const checkAuthorExists = async (authorIndex: number) => {
+		// Set the authorCheck based on the result
+		setAuthorCheck(authorExists);
+
+		// Set the visibility of AuthorForm based on the result
+		setIsAuthorFormVisible(!authorExists);
+		console.log("Author exists:", authorExists); // Add this line to log the value
+		// Resolve the promise to signal that the state has been updated
+
+		// If the author exists, update the form state with the author ID
+		if (authorExists) {
+			const authors = form.getValues("authors");
+			const author = authors[authorIndex];
+			const response = await http.get("/api/auth/author_existance_check", {
+				params: {
+					first_name: author.first_name,
+					last_name: author.last_name,
+				},
+			});
+
+			// Update the form state with the author ID
+			form.setValue(`authors.${authorIndex}.id`, response.data.authorId);
+			console.log(response.data.authorId);
+
+			// Hide the AuthorForm if the author exists
+			setIsAuthorFormVisible(false);
+		}
+	};
+
+	const checkAuthorExists = async (authorIndex: number): Promise<boolean> => {
 		console.log("Checking author index:", authorIndex);
 
 		// Get the current author values from the form state
@@ -63,35 +103,31 @@ const BookForm = () => {
 				// Set the authorExists state based on the response
 				setAuthorExists(authorExists);
 
-				if (!authorExists) {
-					// Update the form state with the author ID
-					form.setValue(`authors.${authorIndex}.id`, response.data.authorId);
-					console.log(response.data.authorId);
-				} else {
-					// Show AuthorForm
-					setShowAuthorForm(true);
-				}
+				return authorExists; // Return the boolean value
 			} catch (error) {
 				console.error("Error checking author existence:", error);
+				return false; // Return false in case of an error
 			}
 		}
+
+		return false; // Return false if author details are missing
 	};
 
-	// Submit the book (including author ID)
-	const submitBook = async (data: SingleBookInfo) => {
-		try {
-			await http.get("/sanctum/csrf-cookie");
+	// // Submit the book (including author ID)
+	// const submitBook = async (data: SingleBookInfo) => {
+	// 	try {
+	// 		await http.get("/sanctum/csrf-cookie");
 
-			// Make the book creation request
-			const response = await http.post("/api/auth/book/create", data);
+	// 		// Make the book creation request
+	// 		const response = await http.post("/api/auth/book/create", data);
 
-			// Handle success (you may want to redirect or show a success message)
-			console.log(response.data);
-		} catch (exception) {
-			// Handle errors
-			console.error("Error creating book:", exception);
-		}
-	};
+	// 		// Handle success (you may want to redirect or show a success message)
+	// 		console.log(response.data);
+	// 	} catch (exception) {
+	// 		// Handle errors
+	// 		console.error("Error creating book:", exception);
+	// 	}
+	// };
 
 	const onSubmit: SubmitHandler<FieldValues> = async (data) => {
 		try {
@@ -152,7 +188,7 @@ const BookForm = () => {
 	};
 
 	return (
-		<>
+		<AuthorFormProvider>
 			<form
 				className='flex flex-col gap-5 px-10 md:w-[40rem] mb-36 md:mb-0'
 				noValidate
@@ -211,30 +247,31 @@ const BookForm = () => {
 								<button
 									className='text-indigo-500 bg-white border-2 border-indigo-500 rounded-l-full hover:bg-indigo-700 focus:outline-none'
 									type='button'
-									onClick={() => checkAuthorExists(authorIndex)}>
+									onClick={() => handleCheckAuthor(authorIndex)}>
 									Check Author
 								</button>
 							</div>
-							{/* Display message based on whether author exists or not */}
-							{authorExists ? (
+							{/* Check if authorCheck is false and render message */}
+							{!authorCheck && isAuthorFormVisible && (
+								<div className='mt-2 text-sm text-right text-cyan-500'>
+									No matches found. Go ahead and add one.
+								</div>
+							)}
+
+							{/* Render AuthorForm and pass the function to close it */}
+							{isAuthorFormVisible && (
+								<AuthorForm onCloseForm={handleCloseAuthorForm} />
+							)}
+
+							{authorCheck && (
 								<p className='mt-2 text-sm text-right text-slate-500'>
 									Great! Author exists already and you need not enter his
 									details!
 								</p>
-							) : (
-								<p className='mt-2 text-sm text-right text-cyan-500'>
-									No matches found. <button></button> Please add the author.
-								</p>
 							)}
 						</div>
 					))}
-					{/* Button to add author (conditionally show based on showAuthorForm
-					state) */}
-					{showAuthorForm && (
-						<AuthorForm onClose={() => setShowAuthorForm(false)} />
-					)}
 				</div>
-
 				{/* Title input */}
 				<div>
 					<label
@@ -248,6 +285,7 @@ const BookForm = () => {
 						})}
 						className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-indigo-700'
 						type='text'
+						onClick={handleInputClick}
 						placeholder='Title'
 						aria-invalid={errors.title ? "true" : "false"}
 					/>
@@ -422,7 +460,7 @@ const BookForm = () => {
 					</button>
 				</div>
 			</form>
-		</>
+		</AuthorFormProvider>
 	);
 };
 export default BookForm;

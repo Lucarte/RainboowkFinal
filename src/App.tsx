@@ -4,6 +4,8 @@ import {
 	RouterProvider,
 	Route,
 } from "react-router-dom";
+import AuthProvider from "./context/AuthProvider";
+import { AuthorFormProvider } from "./context/AuthorFormContext";
 
 // Layouts
 import RootLayout from "./layouts/RootLayout";
@@ -97,7 +99,13 @@ const router = createBrowserRouter(
 	)
 );
 const App = () => {
-	return <RouterProvider router={router} />;
+	return (
+		<AuthProvider>
+			<AuthorFormProvider>
+				<RouterProvider router={router} />
+			</AuthorFormProvider>
+		</AuthProvider>
+	);
 };
 
 export default App;

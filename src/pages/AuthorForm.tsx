@@ -1,9 +1,22 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+// import { useNavigate } from "react-router-dom";
 import http from "../utils/http";
 import { AuthorInfo } from "../types/AuthorInfo";
+import {
+	AuthorFormProvider,
+	useAuthorFormContext,
+} from "../context/AuthorFormContext";
 
-const AuthorForm = () => {
+type Props = {
+	onCloseForm: () => void;
+};
+
+const AuthorForm = ({ onCloseForm }: Props) => {
+	const { isAuthorFormVisible, setIsAuthorFormVisible } =
+		useAuthorFormContext();
+
+	console.log("Before setting visibility:", isAuthorFormVisible);
+
 	const [authorData, setAuthorData] = useState<AuthorInfo>({
 		first_name: "",
 		last_name: "",
@@ -17,20 +30,28 @@ const AuthorForm = () => {
 	});
 
 	const [errors, setErrors] = useState<Record<string, string>>({});
-	const navigate = useNavigate();
+	const [submitting, setSubmitting] = useState(false);
 
 	const saveAuthorData = async (data: AuthorInfo) => {
 		try {
-			console.log("Sending data to server:", data); // Add this line
 			const response = await http.post("/api/auth/create_author", data);
 			console.log("Author data saved:", response.data);
 		} catch (error) {
-			console.error("Error saving author data:", error);
+			console.error("Error submitting Author Form:", error);
+			setErrors({
+				submit: "An error occurred while saving the author. Please try again.",
+			});
+		} finally {
+			setSubmitting(false);
 		}
 	};
 
 	const handleFormSubmit = async () => {
 		try {
+			console.log("subnitting form...");
+			setSubmitting(true);
+			setErrors({}); // to clear previous errors
+
 			// Validate the form data
 			const validationErrors: Record<string, string> = {};
 
@@ -74,19 +95,18 @@ const AuthorForm = () => {
 			// Call your API endpoint to save the author data
 			await saveAuthorData(authorData);
 
-			// Display alert
-			alert("Author added");
-
-			handleClose();
+			// Close the AuthorForm after saving the author data
+			onCloseForm();
 		} catch (error) {
 			console.error("Error submitting Author Form:", error);
 			// Handle error appropriately, e.g., show an error message to the user
+			setErrors({
+				submit:
+					"An error occurred while submitting the form. Please try again.",
+			});
+		} finally {
+			setSubmitting(false);
 		}
-	};
-
-	const handleClose = () => {
-		// You can add additional logic here before navigating away
-		navigate("/book/form");
 	};
 
 	// Validation functions
@@ -109,7 +129,7 @@ const AuthorForm = () => {
 	};
 
 	return (
-		<>
+		<AuthorFormProvider>
 			<div className='max-w-md p-6 mx-auto bg-white rounded-lg shadow-lg'>
 				{/* Title Input */}
 				<h1 className='pb-8 pl-2 font-semibold text-slate-500'>
@@ -222,7 +242,7 @@ const AuthorForm = () => {
 					<label
 						className='block mb-2 text-sm font-bold tracking-wider text-right text-indigo-500'
 						htmlFor='nationality'>
-						Nationality:
+						Born in:
 					</label>
 					<input
 						value={authorData.nationality}
@@ -231,7 +251,7 @@ const AuthorForm = () => {
 						}
 						className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-indigo-700'
 						type='text'
-						placeholder='Nationality'
+						placeholder='(city), (state), country'
 					/>
 					{errors.nationality && (
 						<p className='text-red-500'>{errors.nationality}</p>
@@ -311,7 +331,7 @@ const AuthorForm = () => {
 					</button>
 				</div>
 			</div>
-		</>
+		</AuthorFormProvider>
 	);
 };
 

@@ -13,6 +13,9 @@ export default {
 				roboto: "Roboto",
 				rubik: "Rubik Doodle Shadow",
 			},
+			// screens: {
+			// 	xs: 400px ODER ODER
+			// },
 		},
 	},
 	plugins: [],

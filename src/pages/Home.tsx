@@ -65,8 +65,14 @@ const Home = () => {
 						</li>
 						<li className=' bg-indigo-500 px-2 w-8 -mr-[1px] rounded-lg rounded-b-none rotate-[9deg] h-40'>
 							<div className='text-2xl font-archivo pb-32 pr-36 text-cyan-500 -rotate-[90deg]'>
-								<NavLink to='/book/form' onClick={handleNavLinkClick}>
-									Add_Books
+								<NavLink to='/auth/book/form' onClick={handleNavLinkClick}>
+									{/* <button className=''> */}
+									Add_Book
+									{/* <NavLink to='/book/create'>English</NavLink> */}
+									{/* <NavLink to='/libro/create'>Spanish</NavLink>
+							<NavLink to='/livre/create'>French</NavLink>
+						<NavLink to='/buch/create'>German</NavLink> */}
+									{/* </button> */}
 								</NavLink>
 							</div>
 						</li>
