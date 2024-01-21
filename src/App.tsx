@@ -5,7 +5,7 @@ import {
 	Route,
 } from "react-router-dom";
 import AuthProvider from "./context/AuthProvider";
-import { AuthorFormProvider } from "./context/AuthorFormContext";
+import { GeneralFormProvider } from "./context/GeneralFormContext";
 
 // Layouts
 import RootLayout from "./layouts/RootLayout";
@@ -40,6 +40,7 @@ import BookCatalog from "./pages/BookCatalog";
 import Publisher from "./pages/Publisher";
 import BookForm from "./pages/BookForm";
 import AuthorForm from "./pages/AuthorForm";
+import IllustratorForm from "./pages/IllustratorForm";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -82,6 +83,10 @@ const router = createBrowserRouter(
 					<Route path='/auth/book/update/:title' element={<BookForm />} />
 					<Route path='/auth/book/delete/:title' element={<BookForm />} />
 					<Route path='/auth/create_author' element={<AuthorForm />} />
+					<Route
+						path='/auth/create_illustrator'
+						element={<IllustratorForm />}
+					/>
 				</Route>
 				{/* 
 				NEED
@@ -101,9 +106,7 @@ const router = createBrowserRouter(
 const App = () => {
 	return (
 		<AuthProvider>
-			<AuthorFormProvider>
-				<RouterProvider router={router} />
-			</AuthorFormProvider>
+			<RouterProvider router={router} />
 		</AuthProvider>
 	);
 };

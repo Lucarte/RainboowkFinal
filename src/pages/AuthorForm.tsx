@@ -1,22 +1,15 @@
-import { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import http from "../utils/http";
 import { AuthorInfo } from "../types/AuthorInfo";
-import {
-	AuthorFormProvider,
-	useAuthorFormContext,
-} from "../context/AuthorFormContext";
 
-type Props = {
-	onCloseForm: () => void;
+type AuthorFormProps = {
+	form: ReturnType<typeof useForm>;
+	// onCloseForm: () => void;
+	// onOpenForm: () => void;
 };
 
-const AuthorForm = ({ onCloseForm }: Props) => {
-	const { isAuthorFormVisible, setIsAuthorFormVisible } =
-		useAuthorFormContext();
-
-	console.log("Before setting visibility:", isAuthorFormVisible);
-
+const AuthorForm: FormComponent<AuthorFormProps> = ({ form }) => {
 	const [authorData, setAuthorData] = useState<AuthorInfo>({
 		first_name: "",
 		last_name: "",
@@ -48,7 +41,7 @@ const AuthorForm = ({ onCloseForm }: Props) => {
 
 	const handleFormSubmit = async () => {
 		try {
-			console.log("subnitting form...");
+			console.log("submitting form...");
 			setSubmitting(true);
 			setErrors({}); // to clear previous errors
 
@@ -129,7 +122,7 @@ const AuthorForm = ({ onCloseForm }: Props) => {
 	};
 
 	return (
-		<AuthorFormProvider>
+		<>
 			<div className='max-w-md p-6 mx-auto bg-white rounded-lg shadow-lg'>
 				{/* Title Input */}
 				<h1 className='pb-8 pl-2 font-semibold text-slate-500'>
@@ -331,7 +324,7 @@ const AuthorForm = ({ onCloseForm }: Props) => {
 					</button>
 				</div>
 			</div>
-		</AuthorFormProvider>
+		</>
 	);
 };
 
