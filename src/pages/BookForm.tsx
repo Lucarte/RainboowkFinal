@@ -202,7 +202,9 @@ const BookForm = () => {
 							)}
 
 							{/* Render AuthorForm and pass the function to close it */}
-							{isAuthorFormVisible && <AuthorForm />}
+							{isAuthorFormVisible && (
+								<AuthorForm onCloseForm={closeAuthorForm} />
+							)}
 						</div>
 					</div>
 				))}
@@ -274,14 +276,26 @@ const BookForm = () => {
 						<button
 							className='text-indigo-500 bg-white border-2 border-indigo-500 rounded-l-full hover:bg-indigo-700 focus:outline-none'
 							type='button'
-							onClick={() => handleCheckIllustratorExistence(illustratorIndex)}>
+							onClick={async () => {
+								const exists = await handleCheckIllustratorExistence(
+									illustratorIndex
+								);
+
+								// If illustratorCheck is true, the illustrator exists, and the form is closed
+								if (exists) {
+									console.log(`Great! Illustrator exists already.`);
+								}
+
+								// If illustratorCheck is false, the illustrator does not exist, and the form is opened
+								if (!exists) {
+									console.log(`No matches found. Go ahead and add one.`);
+									openIllustratorForm();
+								}
+							}}>
 							Check Illustrator
 						</button>
 					</div>
 				))}
-				{/* Log the values before calling handleEntityExistence */}
-				{console.log("isIllustratorFormVisible:", isIllustratorFormVisible)}
-				{console.log("illustratorCheck:", illustratorCheck)}
 
 				{/* Check if illustratorCheck is false and render message */}
 				{!illustratorCheck && isIllustratorFormVisible && (
@@ -293,7 +307,8 @@ const BookForm = () => {
 				{/* Display message when illustratorCheck is true and form is not visible */}
 				{illustratorCheck && !isIllustratorFormVisible && (
 					<p className='mt-2 text-sm text-right text-slate-500'>
-						Great! Illustrator exists already, and you need not enter details!
+						Great! Illustrator exists already and you need not enter their
+						details!
 					</p>
 				)}
 

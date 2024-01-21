@@ -5,11 +5,10 @@ import { AuthorInfo } from "../types/AuthorInfo";
 
 type AuthorFormProps = {
 	form: ReturnType<typeof useForm>;
-	// onCloseForm: () => void;
-	// onOpenForm: () => void;
+	onCloseForm: () => void;
 };
 
-const AuthorForm: FormComponent<AuthorFormProps> = ({ form }) => {
+const AuthorForm: React.FC<AuthorFormProps> = ({ form, onCloseForm }) => {
 	const [authorData, setAuthorData] = useState<AuthorInfo>({
 		first_name: "",
 		last_name: "",
@@ -39,7 +38,8 @@ const AuthorForm: FormComponent<AuthorFormProps> = ({ form }) => {
 		}
 	};
 
-	const handleFormSubmit = async () => {
+	const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
 		try {
 			console.log("submitting form...");
 			setSubmitting(true);
@@ -87,8 +87,7 @@ const AuthorForm: FormComponent<AuthorFormProps> = ({ form }) => {
 
 			// Call your API endpoint to save the author data
 			await saveAuthorData(authorData);
-
-			// Close the AuthorForm after saving the author data
+			alert("Author data successfully saved!");
 			onCloseForm();
 		} catch (error) {
 			console.error("Error submitting Author Form:", error);
