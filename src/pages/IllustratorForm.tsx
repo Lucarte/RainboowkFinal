@@ -4,12 +4,12 @@ import http from "../utils/http";
 import { IllustratorInfo } from "../types/IllustratorInfo";
 
 type IllustratorFormProps = {
-	form: ReturnType<typeof useForm>;
+	// form: ReturnType<typeof useForm>;
 	onCloseForm: () => void;
 };
 
 const IllustratorForm: React.FC<IllustratorFormProps> = ({
-	form,
+	// form,
 	onCloseForm,
 }) => {
 	const [illustratorData, setIllustratorData] = useState<IllustratorInfo>({
@@ -29,10 +29,7 @@ const IllustratorForm: React.FC<IllustratorFormProps> = ({
 
 	const saveIllustratorData = async (data: IllustratorInfo) => {
 		try {
-			const response = await http.post(
-				"/api/illustrators/create_illustrator",
-				data
-			);
+			const response = await http.post("/api/auth/create_illustrator", data);
 			console.log("Illustrator data saved:", response.data);
 		} catch (error) {
 			console.error("Error submitting Illustrator Form:", error);

@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+// import { useForm } from "react-hook-form";
 import http from "../utils/http";
 import { AuthorInfo } from "../types/AuthorInfo";
 
 type AuthorFormProps = {
-	form: ReturnType<typeof useForm>;
+	// form: ReturnType<typeof useForm>;
 	onCloseForm: () => void;
 };
 
-const AuthorForm: React.FC<AuthorFormProps> = ({ form, onCloseForm }) => {
+const AuthorForm: React.FC<AuthorFormProps> = ({ onCloseForm }) => {
 	const [authorData, setAuthorData] = useState<AuthorInfo>({
 		first_name: "",
 		last_name: "",
@@ -26,15 +26,22 @@ const AuthorForm: React.FC<AuthorFormProps> = ({ form, onCloseForm }) => {
 
 	const saveAuthorData = async (data: AuthorInfo) => {
 		try {
+			// Request CSRF token
+			await http.get("/sanctum/csrf-cookie");
+
+			// Make the author creation request
 			const response = await http.post("/api/auth/create_author", data);
-			console.log("Author data saved:", response.data);
-		} catch (error) {
+
+			// Handle successful response
+			console.log("Author created successfully:", response.data);
+		} catch (error: any) {
+			// Handle error
 			console.error("Error submitting Author Form:", error);
-			setErrors({
-				submit: "An error occurred while saving the author. Please try again.",
-			});
-		} finally {
-			setSubmitting(false);
+
+			// Optionally, check the error response for more details
+			if (error.response) {
+				console.log("Error response data:", error.response.data);
+			}
 		}
 	};
 

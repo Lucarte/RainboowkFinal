@@ -1,12 +1,6 @@
 import { useForm } from "react-hook-form";
 import http from "./http";
 
-// type FormComponentProps = {
-// 	onCloseForm: () => void;
-// 	onOpenForm: () => void;
-// 	setMessage: (message: string) => void;
-// };
-
 export const handleEntityExistence = async (
 	form: ReturnType<typeof useForm>,
 	entityIndex: number,
@@ -30,6 +24,7 @@ export const handleEntityExistence = async (
 					// You might need to customize this based on your entity structure
 					first_name: entity.first_name,
 					last_name: entity.last_name,
+					name: entity.name,
 				},
 			});
 
@@ -40,10 +35,8 @@ export const handleEntityExistence = async (
 
 			// Update the visibility of the form based on the result
 			if (response.data.exists) {
-				console.log(`Great! ${entityName} already exists.`);
 				closeForm();
 			} else {
-				console.log(`You can add a new ${entityName}.`);
 				openForm();
 			}
 
