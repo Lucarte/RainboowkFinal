@@ -5,7 +5,6 @@ import {
 	Route,
 } from "react-router-dom";
 import AuthProvider from "./context/AuthProvider";
-import { GeneralFormProvider } from "./context/GeneralFormContext";
 
 // Layouts
 import RootLayout from "./layouts/RootLayout";
@@ -76,13 +75,18 @@ const router = createBrowserRouter(
 				</Route>
 				// For signed users (OR admin)
 				<Route element={<ProtectedLayout />}>
+					<Route path='/users/:username' element={<UsersList />} />
 					<Route path='/auth/book/form' element={<BookForm />} />
 					Funktiontiert so: /auth/book/form
 					<Route path='/user/:username' element={<User />} />
 					<Route path='/auth/book/create' element={<BookForm />} />
 					<Route path='/auth/book/update/:title' element={<BookForm />} />
 					<Route path='/auth/book/delete/:title' element={<BookForm />} />
-					<Route path='/auth/create_author' element={<AuthorForm />} />
+					<Route
+						path='/auth/create_author'
+						element={<AuthorForm />}
+						// element={<AuthorForm onCloseForm={() => closeAuthorForm()} />}
+					/>
 					<Route
 						path='/auth/create_illustrator'
 						element={<IllustratorForm />}

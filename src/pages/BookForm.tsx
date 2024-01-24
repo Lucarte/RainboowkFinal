@@ -1,4 +1,5 @@
-import { useForm, useFieldArray, UseFormSetValue } from "react-hook-form";
+// import { useHistory } from "react-router-dom";
+import { useForm, useFieldArray } from "react-hook-form";
 import { AuthContext } from "../context/AuthProvider";
 import { useContext, useState } from "react";
 import { SingleBookInfo } from "../types/SingleBookInfo";
@@ -6,9 +7,11 @@ import { handleEntityExistence } from "../utils/handleEntityExistence";
 import AuthorField from "./AuthorField";
 import IllustratorField from "./IllustratorField";
 import PublisherField from "./PublisherField";
-import { PublisherInfo } from "../types/PublisherInfo";
+import http from "../utils/http";
 
 const BookForm = () => {
+	const { user } = useContext(AuthContext);
+
 	// State variables and their corresponding set functions
 	const [isAuthorFormVisible, setAuthorFormVisibility] =
 		useState<boolean>(false);
@@ -19,7 +22,6 @@ const BookForm = () => {
 	const [authorCheck, setAuthorCheck] = useState(false);
 	const [illustratorCheck, setIllustratorCheck] = useState(false);
 	const [publisherCheck, setPublisherCheck] = useState(false);
-	const { auth } = useContext(AuthContext);
 
 	const handleCheckAuthor = async (exists: boolean) => {
 		if (exists) {
@@ -51,6 +53,7 @@ const BookForm = () => {
 		}
 	};
 
+	// Manage form visibility from authors/illustrators/publisher
 	const openAuthorForm = () => {
 		setAuthorFormVisibility(true);
 	};
@@ -82,13 +85,13 @@ const BookForm = () => {
 			publisher: { name: "" }, // Initialize the publisher field
 		},
 	});
+
 	const {
 		register,
 		control,
 		handleSubmit,
 		formState: { errors, isSubmitting },
 		setError,
-		setValue,
 	} = form;
 
 	const { fields: authorFields } = useFieldArray({
@@ -100,8 +103,6 @@ const BookForm = () => {
 		control,
 		name: "illustrators",
 	});
-
-	const { fields: publisherFields } = form;
 
 	const handleCheckAuthorExistence = async (authorIndex: number) => {
 		const exists = await handleEntityExistence(
@@ -137,11 +138,7 @@ const BookForm = () => {
 		return exists;
 	};
 
-	const handleCheckPublisherExistence = async (
-		// form: SingleBookInfo,
-		// setValue: UseFormSetValue<SingleBookInfo>,
-		publisherIndex: number
-	) => {
+	const handleCheckPublisherExistence = async (publisherIndex: number) => {
 		const exists = await handleEntityExistence(
 			form,
 			publisherIndex,
@@ -155,16 +152,73 @@ const BookForm = () => {
 
 		setPublisherCheck(exists);
 
-		// Optionally, set the publisher name in the form state // does not yet work
-		// if (exists) {
-		// 	setValue(`publisher.${publisherIndex}.name`, exists.name);
-		// }
-
 		return exists;
+	};
+
+	const submitBook = async (formData: SingleBookInfo) => {
+		const userId = user?.id;
+
+		console.log("User ID:", userId);
+		console.log("Book Data:", formData);
+
+		try {
+			await http.get("/sanctum/csrf-cookie");
+
+			// Continue with the rest of your code
+			const authorId = await handleCheckAuthorExistence(0);
+			const illustratorId = await handleCheckIllustratorExistence(0);
+			const publisherId = await handleCheckPublisherExistence(0);
+
+			// Use FormData for handling file uploads
+			const formData = new FormData();
+			formData.append("user_id", userId.toString());
+			formData.append("ISBN", form.getValues().ISBN);
+			formData.append("title", form.getValues().title);
+			formData.append("description", form.getValues().description);
+			formData.append("authors", JSON.stringify([{ id: authorId }]));
+			formData.append("illustrators", JSON.stringify([{ id: illustratorId }]));
+			formData.append("publisher", JSON.stringify({ id: publisherId }));
+			formData.append("print_date", form.getValues().print_date);
+			formData.append("original_language", form.getValues().original_language);
+			formData.append("image_path", form.getValues().image_path[0]);
+
+			// Make the book creation request
+			const response = await http.post("/api/auth/book/create", formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+					Accept: "application / json",
+				},
+			});
+
+			// Handle the response as needed
+			console.log(response.data);
+		} catch (exception: any) {
+			// Handle errors
+			console.error("Error creating book:", exception);
+
+			const { response } = exception;
+
+			if (response && response.status === 404) {
+				// Display a user-friendly message when the publisher is not found
+				setError("publisher", {
+					message:
+						"Selected publisher not found. Please choose an existing publisher or add a new one.",
+				});
+			} else if (response && response.data && response.data.message) {
+				// Display the server's error message
+				setError("root", { message: response.data.message });
+			} else {
+				// Handle generic error, e.g., server down or network error
+				setError("root", {
+					message: "There was a problem saving the book. Please try again!",
+				});
+			}
+		}
 	};
 
 	return (
 		<form
+			onSubmit={handleSubmit(submitBook)}
 			className='flex flex-col gap-5 px-10 md:w-[40rem] mb-36 md:mb-0'
 			noValidate>
 			{/* Title input */}
@@ -307,7 +361,7 @@ const BookForm = () => {
 					})}
 					className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-indigo-700'
 					type='text'
-					placeholder='yyy-mm-dd'
+					placeholder='yyyy-mm-dd'
 					aria-invalid={errors.print_date ? "true" : "false"}
 				/>
 				<p className='mt-2 text-sm text-right text-cyan-500'>
@@ -342,24 +396,23 @@ const BookForm = () => {
 					Cover:
 				</label>
 				<input
-					{...register("cover", {
+					{...register("image_path", {
 						required: "Please upload a cover",
 					})}
 					className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-indigo-700'
 					type='file'
 					placeholder='Cover'
-					aria-invalid={errors.cover ? "true" : "false"}
+					aria-invalid={errors.image_path ? "true" : "false"}
 				/>
 				<p className='mt-2 text-sm text-right text-cyan-500'>
-					{errors.cover?.message}
+					{errors.image_path?.message}
 				</p>
 			</div>
 
 			<div className='mt-10 mb-4 text-right '>
 				<button
 					disabled={isSubmitting}
-					className='py-2 pl-8 pr-3 mb-24 text-white bg-indigo-500 rounded-l-full hover:bg-indigo-700 focus:outline-none'
-					type='submit'>
+					className='py-2 pl-8 pr-3 mb-24 text-white bg-indigo-500 rounded-l-full hover:bg-indigo-700 focus:outline-none'>
 					Add Book
 				</button>
 			</div>

@@ -4,7 +4,6 @@ import http from "../utils/http";
 import { AuthorInfo } from "../types/AuthorInfo";
 
 type AuthorFormProps = {
-	// form: ReturnType<typeof useForm>;
 	onCloseForm: () => void;
 };
 

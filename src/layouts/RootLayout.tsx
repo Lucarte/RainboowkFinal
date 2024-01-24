@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthProvider";
 import { defaultAuth } from "../utils/auth";
 import http from "../utils/http";
@@ -8,6 +8,7 @@ import Footer from "../components/Footer";
 const RootLayout = () => {
 	const { auth, setAuth } = useContext(AuthContext);
 	const [isActive, setIsActive] = useState(false);
+	const [logoutMessage, setLogoutMessage] = useState<string | null>(null);
 
 	const getInitialAuth = async () => {
 		try {
@@ -20,14 +21,21 @@ const RootLayout = () => {
 		}
 	};
 
-	useEffect(() => void getInitialAuth(), []);
+	useEffect(() => {
+		void getInitialAuth();
+	}, []);
 
 	const handleLogout = async () => {
 		try {
 			await http.post("/api/auth/user/logout");
 			setAuth(defaultAuth);
-		} catch {
-			//
+			// setLogoutMessage("See you next time, {auth.username}!");
+			alert(`See you next time, ${auth.username}!
+
+HAVE FUN READING`);
+		} catch (error) {
+			console.error("Error logging out:", error);
+			setLogoutMessage("Error logging out. Please try again.");
 		}
 	};
 
@@ -35,6 +43,9 @@ const RootLayout = () => {
 		<>
 			<Header isActive={isActive} setIsActive={setIsActive} />
 			{/* <BookCatalog /> */}
+			{/* {logoutMessage && (
+				<div className='text-xl text-white logout-message'>{logoutMessage}</div>
+			)} */}
 			<Footer handleLogout={handleLogout} />
 		</>
 	);

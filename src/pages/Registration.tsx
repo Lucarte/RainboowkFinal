@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
 // import { DevTool } from "@hookform/devtools";
 import { AuthContext } from "../context/AuthProvider";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import http from "../utils/http";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { FormValues } from "../types/UserFormValues";
 
 const Registration = () => {
-	const { auth, setAuth } = useContext(AuthContext);
+	const { setAuth } = useContext(AuthContext);
 	const navigate = useNavigate();
 	// const { state } = useLocation();
 	const form = useForm<FormValues>();
@@ -48,6 +48,7 @@ const Registration = () => {
 			const errors = exception.response.data.errors;
 
 			for (const [fieldName, errorList] of Object.entries(errors)) {
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				const fieldErrors = (errorList as any[]).map((message) => ({
 					message,
 				}));
@@ -112,7 +113,7 @@ const Registration = () => {
 
 	return (
 		<>
-			<article className='flex flex-col items-center md:rounded-full md:mb-44 md:bg-slate-50 md:px-16 md:pb-40'>
+			<article className='flex flex-col items-center md:rounded-full md:mb-44 md:bg-slate-50 md:px-16 lg:px-[14rem] 2xl:px-[30rem] md:pb-40'>
 				<h1 className='text-center md:w-[40rem] pt-0 mb-10 md:pt-12 text-2xl md:text-2xl rounded-b-lg md:mb-20 text-slate-700 md:px-28 md:bg-slate-50'>
 					-- R e G i S t R a T i O n --
 				</h1>

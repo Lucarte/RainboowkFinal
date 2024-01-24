@@ -5,7 +5,7 @@ import { AuthContext } from "../context/AuthProvider";
 import { useLocation, useNavigate } from "react-router-dom";
 import http from "../utils/http";
 
-type FormValues = {
+type LoginFormValues = {
 	email: string;
 	password: string;
 };
@@ -13,11 +13,11 @@ type FormValues = {
 const Login = () => {
 	const location = useLocation();
 	const message = location.state?.message;
-	const { auth, setAuth } = useContext(AuthContext);
+	const { setAuth, setUser } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const { state } = useLocation();
 
-	const form = useForm<FormValues>();
+	const form = useForm<LoginFormValues>();
 	const {
 		register,
 		control,
@@ -26,21 +26,18 @@ const Login = () => {
 		setError,
 	} = form;
 
-	// Wenn Nutzer von einer Private Route kam
-	// dann wollen wir dahin nach Login zurück
-	// Wenn er direkt auf Login klickte, schicken wir
-	// den Nutzer an die Homepage
-
 	// if our 'from' state is empty, then we take the user home
 	const { from = "/" } = state || {};
 
 	// Takes place when all fields validated
-	const onSubmit = async (data: FormValues) => {
+	const onSubmit = async (data: LoginFormValues) => {
 		try {
 			await http.get("/sanctum/csrf-cookie");
 			const response = await http.post("api/auth/login", data);
 			const userData = response.data.user;
 			console.log(userData);
+
+			setUser(userData);
 
 			setAuth({
 				...userData,

@@ -11,7 +11,8 @@ export type SingleBookInfo = {
 	original_language: string;
 	created_at: string;
 	updated_at: string;
-	cover: Cover;
+	image_path: FileList;
+	// image_path: Cover;
 
 	authors: AuthorInfo[];
 	illustrators: IllustratorInfo[];
