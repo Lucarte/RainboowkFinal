@@ -3,7 +3,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { AuthContext } from "../context/AuthProvider";
 import { useContext, useState } from "react";
 import { SingleBookInfo } from "../types/SingleBookInfo";
-import { handleEntityExistence } from "../utils/handleEntityExistence";
+import { HandleEntityExistenceProps } from "../types/EntityExistence";
 import AuthorField from "./AuthorField";
 import IllustratorField from "./IllustratorField";
 import PublisherField from "./PublisherField";
@@ -19,64 +19,9 @@ const BookForm = () => {
 		useState<boolean>(false);
 	const [isPublisherFormVisible, setPublisherFormVisibility] =
 		useState<boolean>(false);
-	const [authorCheck, setAuthorCheck] = useState(false);
-	const [illustratorCheck, setIllustratorCheck] = useState(false);
-	const [publisherCheck, setPublisherCheck] = useState(false);
-
-	const handleCheckAuthor = async (exists: boolean) => {
-		if (exists) {
-			// Handle logic when author exists
-			console.log("Author already exists!");
-		} else {
-			// Handle logic when author doesn't exist
-			console.log("Author does not exist. You can add them.");
-		}
-	};
-
-	const handleCheckIllustrator = async (exists: boolean) => {
-		if (exists) {
-			// Handle logic when illustrator exists
-			console.log("Illustrator already exists!");
-		} else {
-			// Handle logic when illustrator doesn't exist
-			console.log("Illustrator does not exist. You can add them.");
-		}
-	};
-
-	const handleCheckPublisher = async (exists: boolean) => {
-		if (exists) {
-			// Handle logic when publisher exists
-			console.log("Publisher already exists!");
-		} else {
-			// Handle logic when publisher doesn't exist
-			console.log("Publisher does not exist. You can add them.");
-		}
-	};
-
-	// Manage form visibility from authors/illustrators/publisher
-	const openAuthorForm = () => {
-		setAuthorFormVisibility(true);
-	};
-
-	const closeAuthorForm = () => {
-		setAuthorFormVisibility(false);
-	};
-
-	const openIllustratorForm = () => {
-		setIllustratorFormVisibility(true);
-	};
-
-	const closeIllustratorForm = () => {
-		setIllustratorFormVisibility(false);
-	};
-
-	const openPublisherForm = () => {
-		setPublisherFormVisibility(true);
-	};
-
-	const closePublisherForm = () => {
-		setPublisherFormVisibility(false);
-	};
+	const [authorId, setAuthorId] = useState<number | null>(null);
+	const [illustratorId, setIllustratorId] = useState<number | null>(null);
+	const [publisherId, setPublisherId] = useState<number | null>(null);
 
 	const form = useForm<SingleBookInfo>({
 		defaultValues: {
@@ -89,6 +34,7 @@ const BookForm = () => {
 	const {
 		register,
 		control,
+		getValues,
 		handleSubmit,
 		formState: { errors, isSubmitting },
 		setError,
@@ -104,55 +50,97 @@ const BookForm = () => {
 		name: "illustrators",
 	});
 
-	const handleCheckAuthorExistence = async (authorIndex: number) => {
-		const exists = await handleEntityExistence(
-			form,
-			authorIndex,
-			"authors",
-			"Author",
-			"/api/auth/author_existence_check",
-			handleCheckAuthor,
-			openAuthorForm,
-			closeAuthorForm
-		);
+	// const handleCheckEntityExistence = async ({
+	// 	entityName,
+	// 	apiEndpoint,
+	// 	handleExistence,
+	// 	openForm,
+	// 	closeForm,
+	// }: HandleEntityExistenceProps): Promise<void> => {
+	// 	try {
+	// 		// Make the existence check request
+	// 		const response = await http.get(
+	// 			`${apiEndpoint}?entityName=${entityName}&index=0`
+	// 		);
 
-		setAuthorCheck(exists);
+	// 		// Assuming the response contains necessary information, extract data
+	// 		const { exists, entityId } = response.data;
 
-		return exists;
+	// 		if (exists) {
+	// 			handleExistence(entityId);
+	// 			openForm();
+	// 		} else {
+	// 			closeForm();
+	// 		}
+	// 	} catch (error) {
+	// 		console.error(`Error checking ${entityName} existence:`, error);
+	// 		// Handle errors as needed
+	// 		throw error; // Ensure the error is propagated
+	// 	}
+	// };
+	// BookForm.tsx
+
+	// BookForm.tsx
+
+	// BookForm.tsx
+
+	const handleCheckAuthorExistence = async (
+		authorIndex: number,
+		formData: SingleBookInfo
+	): Promise<number | null> => {
+		try {
+			// Make the existence check request for authors
+			const response = await http.get(
+				`/api/auth/author_existence_check?first_name=${formData.authors[authorIndex].first_name}&last_name=${formData.authors[authorIndex].last_name}&index=${authorIndex}`
+			);
+
+			// Assuming the response contains necessary information, extract data
+			const { exists, authorId } = response.data;
+
+			if (exists) {
+				console.log(`Author exists with id: ${authorId}`);
+				return authorId; // Return the authorId when found
+			} else {
+				console.log(`No author found`);
+				return null; // Return null when not found
+			}
+		} catch (error) {
+			console.error(`Error checking author existence:`, error);
+			// Handle errors as needed
+			throw error; // Ensure the error is propagated
+		}
 	};
 
-	const handleCheckIllustratorExistence = async (illustratorIndex: number) => {
-		const exists = await handleEntityExistence(
-			form,
-			illustratorIndex,
-			"illustrators",
-			"Illustrator",
-			"/api/auth/illustrator_existence_check",
-			handleCheckIllustrator,
-			openIllustratorForm,
-			closeIllustratorForm
-		);
-
-		setIllustratorCheck(exists);
-
-		return exists;
+	const handleCheckIllustratorExistence = async (): Promise<number | null> => {
+		try {
+			await handleCheckEntityExistence({
+				entityName: "Illustrator",
+				apiEndpoint: "/api/auth/illustrator_existence_check",
+				handleExistence: setIllustratorId,
+				openForm: () => setIllustratorFormVisibility(true),
+				closeForm: () => setIllustratorFormVisibility(false),
+			});
+			return illustratorId; // Return the illustratorId after existence check
+		} catch (error) {
+			console.error("Error checking illustrator existence:", error);
+			return null;
+		}
 	};
 
-	const handleCheckPublisherExistence = async (publisherIndex: number) => {
-		const exists = await handleEntityExistence(
-			form,
-			publisherIndex,
-			"publisher",
-			"Publisher",
-			"/api/auth/publisher_existence_check",
-			handleCheckPublisher,
-			openPublisherForm,
-			closePublisherForm
-		);
-
-		setPublisherCheck(exists);
-
-		return exists;
+	const handleCheckPublisherExistence = async (): Promise<number | null> => {
+		try {
+			await handleCheckEntityExistence({
+				entityName: "Publisher",
+				apiEndpoint: "/api/auth/publisher_existence_check",
+				handleExistence: setPublisherId,
+				openForm: () => setPublisherFormVisibility(true),
+				closeForm: () => setPublisherFormVisibility(false),
+			});
+			return publisherId; // Return the publisherId after existence check
+		} catch (error) {
+			console.error("Error checking publisher existence:", error);
+			return null;
+		}
 	};
 
 	const submitBook = async (formData: SingleBookInfo) => {
@@ -161,37 +149,48 @@ const BookForm = () => {
 		console.log("User ID:", userId);
 		console.log("Book Data:", formData);
 
+		// Get the IDs directly from existence checks
+		const authorId = await handleCheckAuthorExistence(
+			formData.authors[0].first_name,
+			formData.authors[0].last_name
+		);
+
 		try {
 			await http.get("/sanctum/csrf-cookie");
 
-			// Continue with the rest of your code
-			const authorId = await handleCheckAuthorExistence(0);
-			const illustratorId = await handleCheckIllustratorExistence(0);
-			const publisherId = await handleCheckPublisherExistence(0);
+			// Get the IDs directly from existence checks
+			const authorId = await handleCheckAuthorExistence();
+			const illustratorId = await handleCheckIllustratorExistence();
+			const publisherId = await handleCheckPublisherExistence();
 
 			// Use FormData for handling file uploads
-			const formData = new FormData();
-			formData.append("user_id", userId.toString());
-			formData.append("ISBN", form.getValues().ISBN);
-			formData.append("title", form.getValues().title);
-			formData.append("description", form.getValues().description);
-			formData.append("authors", JSON.stringify([{ id: authorId }]));
-			formData.append("illustrators", JSON.stringify([{ id: illustratorId }]));
-			formData.append("publisher", JSON.stringify({ id: publisherId }));
-			formData.append("print_date", form.getValues().print_date);
-			formData.append("original_language", form.getValues().original_language);
-			formData.append("image_path", form.getValues().image_path[0]);
+			const formDataToSend = new FormData();
+			formDataToSend.append("user_id", userId?.toString() ?? "");
+			formDataToSend.append("ISBN", formData.ISBN);
+			formDataToSend.append("title", formData.title);
+			formDataToSend.append("description", formData.description);
+			formDataToSend.append("author_id", (authorId ?? 0).toString());
+			formDataToSend.append("illustrator_id", (illustratorId ?? 0).toString());
+			formDataToSend.append("publisher_id", (publisherId ?? 0).toString());
+			formDataToSend.append("print_date", formData.print_date);
+			formDataToSend.append("original_language", formData.original_language);
+			formDataToSend.append("image_path", formData.image_path[0]);
 
 			// Make the book creation request
-			const response = await http.post("/api/auth/book/create", formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-					Accept: "application / json",
-				},
-			});
+			const response = await http.post(
+				"/api/auth/book/create",
+				formDataToSend,
+				{
+					headers: {
+						"Content-Type": "multipart/form-data",
+						Accept: "application/json",
+					},
+				}
+			);
 
 			// Handle the response as needed
 			console.log(response.data);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (exception: any) {
 			// Handle errors
 			console.error("Error creating book:", exception);
@@ -298,10 +297,11 @@ const BookForm = () => {
 						register={register}
 						errors={errors}
 						authorIndex={authorIndex}
+						getValues={getValues}
 						handleCheckAuthorExistence={handleCheckAuthorExistence}
-						openAuthorForm={openAuthorForm}
-						closeAuthorForm={closeAuthorForm}
-						authorCheck={authorCheck}
+						openAuthorForm={() => setAuthorFormVisibility(true)}
+						closeAuthorForm={() => setAuthorFormVisibility(false)}
+						authorId={authorId}
 						isAuthorFormVisible={isAuthorFormVisible}
 					/>
 				))}
@@ -320,9 +320,9 @@ const BookForm = () => {
 						errors={errors}
 						illustratorIndex={illustratorIndex}
 						handleCheckIllustratorExistence={handleCheckIllustratorExistence}
-						openIllustratorForm={openIllustratorForm}
-						closeIllustratorForm={closeIllustratorForm}
-						illustratorCheck={illustratorCheck}
+						openIllustratorForm={() => setIllustratorFormVisibility(true)}
+						closeIllustratorForm={() => setIllustratorFormVisibility(false)}
+						illustratorId={illustratorId}
 						isIllustratorFormVisible={isIllustratorFormVisible}
 					/>
 				))}
@@ -341,9 +341,9 @@ const BookForm = () => {
 					errors={errors}
 					publisherIndex={0}
 					handleCheckPublisherExistence={handleCheckPublisherExistence}
-					openPublisherForm={openPublisherForm}
-					closePublisherForm={closePublisherForm}
-					publisherCheck={publisherCheck}
+					openPublisherForm={() => setPublisherFormVisibility(true)}
+					closePublisherForm={() => setPublisherFormVisibility(false)}
+					publisherId={publisherId}
 					isPublisherFormVisible={isPublisherFormVisible}
 				/>
 			</div>

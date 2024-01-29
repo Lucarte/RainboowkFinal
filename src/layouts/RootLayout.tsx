@@ -13,7 +13,7 @@ const RootLayout = () => {
 	const getInitialAuth = async () => {
 		try {
 			if (auth.username) {
-				const response = await http.get(`api/auth/user/${auth.username}`);
+				const response = await http.get(`api/auth/profile/${auth.username}`);
 				setAuth({ ...response.data, isAdmin: false });
 			}
 		} catch (error) {

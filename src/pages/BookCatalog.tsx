@@ -71,7 +71,7 @@ const BookCatalog = () => {
 		const fetchData = async () => {
 			try {
 				// Adjust the API endpoint based on your Laravel backend
-				const response = await http("/catalog");
+				const response = await http.get("/catalog");
 				console.log("API response:", response.data); // Log the response
 				setBooks(response.data);
 				console.log("insideuseEffect:", response);

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthProvider";
 import http from "../utils/http";
-import EditProfileForm from "./EditProfileForm";
-import { FormValues } from "./types"; // Adjust the path accordingly
+import UpdateProfileForm from "./UpdateProfileForm";
+import { FormValues } from "../types/UserFormValues";
 
 type UserInfo = {
 	pronouns: string;
@@ -24,7 +24,7 @@ const User: React.FC = () => {
 	useEffect(() => {
 		const fetchUserDetails = async () => {
 			try {
-				const response = await http.get(`/api/auth/user/${auth.username}`);
+				const response = await http.get(`/api/auth/profile/${auth.username}`);
 				setUserInfo(response.data.user);
 			} catch (error) {
 				console.error("Error fetching user details:", error);

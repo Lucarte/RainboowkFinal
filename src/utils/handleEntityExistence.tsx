@@ -1,52 +1,44 @@
-import { useForm } from "react-hook-form";
+// handleEntityExistence.tsx
 import http from "./http";
+import { HandleEntityExistenceProps } from "../types/EntityExistence";
 
-export const handleEntityExistence = async (
-	form: ReturnType<typeof useForm>,
-	entityIndex: number,
-	arrayName: string,
-	entityName: string,
-	apiEndpoint: string,
-	handleCheck: (
-		checkFunction: (...args: unknown[]) => Promise<boolean>,
-		...args: unknown[]
-	) => Promise<void>,
-	openForm: () => void,
-	closeForm: () => void
-): Promise<boolean> => {
-	const entityValues = form.getValues(arrayName);
-	const entity = entityValues[entityIndex];
+const handleEntityExistence = async ({
+	entityName,
+	apiEndpoint,
+	handleExistence,
+	openForm,
+	closeForm,
+	firstName, // Add firstName and lastName parameters
+	lastName,
+}: HandleEntityExistenceProps & { firstName: string; lastName: string }) => {
+	try {
+		const response = await http.get(apiEndpoint, {
+			params: {
+				entityName,
+				first_name: firstName, // Pass firstName and lastName as parameters
+				last_name: lastName,
+			},
+		});
+		const { entityId } = response.data || {
+			entityId: null,
+		};
 
-	if (entity) {
-		try {
-			const response = await http.get(apiEndpoint, {
-				params: {
-					// You might need to customize this based on your entity structure
-					first_name: entity.first_name,
-					last_name: entity.last_name,
-					name: entity.name,
-				},
-			});
+		console.log(
+			`${entityName} Existence Check Result:`,
+			`${entityName} ID:`,
+			entityId
+		);
 
-			console.log(response);
+		handleExistence(firstName, lastName);
 
-			// Use handleCheck function to handle the check
-			await handleCheck(() => response.data.exists);
-
-			// Update the visibility of the form based on the result
-			if (response.data.exists) {
-				closeForm();
-			} else {
-				openForm();
-			}
-
-			return response.data.exists;
-		} catch (error) {
-			console.error(`Error checking ${arrayName} existence:`, error);
-			return false;
+		if (entityId) {
+			closeForm();
+		} else {
+			openForm();
 		}
+	} catch (error) {
+		console.error(`Error during ${entityName} existence check:`, error);
 	}
-
-	console.log(`Error: ${entityName} information missing.`);
-	return false;
 };
+
+export default handleEntityExistence;

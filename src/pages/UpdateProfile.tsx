@@ -26,7 +26,7 @@ const UpdateProfile: React.FC<FormValues> = ({ username }) => {
 
 			try {
 				// Fetch user data for pre-filling the update form (optional)
-				const response = await http.get(`/api/auth/user/${username}`);
+				const response = await http.get(`/api/auth/profile/${username}`);
 				const userData = response.data.user;
 
 				const updatedUserData = {
@@ -46,7 +46,7 @@ const UpdateProfile: React.FC<FormValues> = ({ username }) => {
 				);
 
 				// Fetch the updated user data again
-				const updatedResponse = await http.get(`/api/auth/user/${username}`);
+				const updatedResponse = await http.get(`/api/auth/profile/${username}`);
 
 				setShowUpdateForm(true);
 			} catch (error) {

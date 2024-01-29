@@ -98,7 +98,7 @@ const UsersList = () => {
 							</div>
 							<div className='flex justify-center gap-2 m-5'>
 								{/* Link to the user's profile */}
-								<NavLink to={`/api/auth/user/${user.username}`}>
+								<NavLink to={`/api/auth/profile/${user.username}`}>
 									View Profile
 								</NavLink>
 								<button className='px-3 py-1 bg-white rounded-full'>

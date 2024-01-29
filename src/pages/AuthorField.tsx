@@ -1,17 +1,20 @@
-// AuthorField.tsx
-import React from "react";
-import { UseFormRegister } from "react-hook-form";
+import React, { useState } from "react";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { SingleBookInfo } from "../types/SingleBookInfo";
 import AuthorForm from "./AuthorForm";
 
 interface AuthorFieldProps {
 	register: UseFormRegister<SingleBookInfo>;
-	errors: any; // Adjust this type based on your actual error structure
+	errors: FieldErrors<SingleBookInfo>;
 	authorIndex: number;
-	handleCheckAuthorExistence: (authorIndex: number) => Promise<boolean>;
+	getValues: (name?: string | string[]) => SingleBookInfo;
+	handleCheckAuthorExistence: (
+		authorIndex: number,
+		formData: SingleBookInfo
+	) => Promise<number | null>;
 	openAuthorForm: () => void;
 	closeAuthorForm: () => void;
-	authorCheck: boolean;
+	authorId: number | null;
 	isAuthorFormVisible: boolean;
 }
 
@@ -19,20 +22,23 @@ const AuthorField: React.FC<AuthorFieldProps> = ({
 	register,
 	errors,
 	authorIndex,
+	getValues,
 	handleCheckAuthorExistence,
 	openAuthorForm,
 	closeAuthorForm,
-	authorCheck,
+	authorId,
 	isAuthorFormVisible,
 }) => {
+	// Define formData state
+	const [formData, setFormData] = useState<SingleBookInfo>({});
 	return (
 		<div key={authorIndex} className='flex flex-col gap-4'>
-			{/* ... (existing code for First Name and Last Name inputs) ... */}
+			{/* ... (First Name and Last Name inputs) ... */}
 			<div className='flex flex-col'>
 				<div className='flex flex-col'>
 					<label
 						className='block mb-2 text-sm font-bold tracking-wider text-right text-indigo-500'
-						htmlFor={`authors[${authorIndex}].first_name`}>
+						htmlFor={`authors.${authorIndex}.first_name`}>
 						First Name:
 					</label>
 					<input
@@ -74,27 +80,33 @@ const AuthorField: React.FC<AuthorFieldProps> = ({
 				className='text-indigo-500 bg-white border-2 border-indigo-500 rounded-l-full hover:bg-indigo-700 focus:outline-none'
 				type='button'
 				onClick={async () => {
-					const exists = await handleCheckAuthorExistence(authorIndex);
+					const exists = await handleCheckAuthorExistence(
+						authorIndex,
+						formData
+					);
 
-					if (exists) {
-						console.log(`Great! Author exists already.`);
-					} else {
+					setFormChecked(true); // Set the flag after form check
+
+					if (exists !== null) {
 						console.log(`No matches found. Go ahead and add one.`);
+						// Open the form when the author doesn't exist
 						openAuthorForm();
+					} else {
+						console.log(`Great! Author exists already.`);
 					}
 				}}>
 				Check Author
 			</button>
 
-			{!authorCheck && isAuthorFormVisible && (
+			{(!authorId || isAuthorFormVisible) && (
 				<div className='mt-2 text-sm text-right text-cyan-500'>
 					No matches found. Go ahead and add one.
 				</div>
 			)}
 
-			{authorCheck && !isAuthorFormVisible && (
+			{authorId && !isAuthorFormVisible && (
 				<p className='mt-2 text-sm text-right text-slate-500'>
-					Great! Author exists already and you need not enter his details!
+					Great! Author exists already, and you need not enter their details!
 				</p>
 			)}
 

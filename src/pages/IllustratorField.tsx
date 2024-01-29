@@ -1,19 +1,19 @@
 // IllustratorField.tsx
 import React from "react";
-import { UseFormRegister } from "react-hook-form";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { SingleBookInfo } from "../types/SingleBookInfo";
 import IllustratorForm from "./IllustratorForm";
 
 interface IllustratorFieldProps {
 	register: UseFormRegister<SingleBookInfo>;
-	errors: any; // Adjust this type based on your actual error structure
+	errors: FieldErrors<SingleBookInfo>;
 	illustratorIndex: number;
 	handleCheckIllustratorExistence: (
 		illustratorIndex: number
-	) => Promise<boolean>;
+	) => Promise<number | null>;
 	openIllustratorForm: () => void;
 	closeIllustratorForm: () => void;
-	illustratorCheck: boolean;
+	illustratorId: number | null;
 	isIllustratorFormVisible: boolean;
 }
 
@@ -24,7 +24,7 @@ const IllustratorField: React.FC<IllustratorFieldProps> = ({
 	handleCheckIllustratorExistence,
 	openIllustratorForm,
 	closeIllustratorForm,
-	illustratorCheck,
+	illustratorId,
 	isIllustratorFormVisible,
 }) => {
 	return (
@@ -90,13 +90,13 @@ const IllustratorField: React.FC<IllustratorFieldProps> = ({
 				Check Illustrator
 			</button>
 
-			{!illustratorCheck && isIllustratorFormVisible && (
+			{!illustratorId && isIllustratorFormVisible && (
 				<div className='mt-2 text-sm text-right text-cyan-500'>
 					No matches found. Go ahead and add one.
 				</div>
 			)}
 
-			{illustratorCheck && !isIllustratorFormVisible && (
+			{illustratorId && !isIllustratorFormVisible && (
 				<p className='mt-2 text-sm text-right text-slate-500'>
 					Great! Illustrator exists already, and you need not enter their
 					details!

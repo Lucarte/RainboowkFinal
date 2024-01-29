@@ -11,7 +11,7 @@ const DeleteProfile: React.FC<DeleteUserProps> = ({ username, onDelete }) => {
 		try {
 			// Implement your delete logic here
 			// For example, delete the user with a DELETE request
-			await http.delete(`/api/auth/user/${username}`);
+			await http.delete(`/api/auth/profile/${username}`);
 
 			// After successful delete, refresh the user list
 			onDelete();

@@ -11,6 +11,7 @@ const Book = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
+				console.log("Fetching book with title:", title); // Debugging line
 				const response = await http.get(`/api/book/${title}`);
 				setBook(response.data.book);
 

@@ -42,10 +42,10 @@ const UpdateProfileForm: React.FC<User> = ({ username }) => {
 	const onSubmit = async (data: FormValues) => {
 		try {
 			// Make the update request
-			await http.patch(`/api/auth/user/${username}`, data);
+			await http.patch(`/api/auth/profile/${username}`, data);
 
 			// Redirect or show a success message
-			navigate("/profile", {
+			navigate("/api/auth/profile/${username}", {
 				state: { successMessage: "Profile updated successfully" },
 			});
 		} catch (error) {

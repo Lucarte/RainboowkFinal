@@ -1,5 +1,4 @@
 import { useState } from "react";
-// import { useForm } from "react-hook-form";
 import http from "../utils/http";
 import { AuthorInfo } from "../types/AuthorInfo";
 
@@ -22,7 +21,7 @@ const AuthorForm: React.FC<AuthorFormProps> = ({ onCloseForm }) => {
 
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [submitting, setSubmitting] = useState(false);
-
+	console.log(submitting);
 	const saveAuthorData = async (data: AuthorInfo) => {
 		try {
 			// Request CSRF token
@@ -33,6 +32,7 @@ const AuthorForm: React.FC<AuthorFormProps> = ({ onCloseForm }) => {
 
 			// Handle successful response
 			console.log("Author created successfully:", response.data);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (error: any) {
 			// Handle error
 			console.error("Error submitting Author Form:", error);
@@ -111,7 +111,7 @@ const AuthorForm: React.FC<AuthorFormProps> = ({ onCloseForm }) => {
 	const isValidDate = (value: string, fieldName: string): boolean => {
 		const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 		if (!dateRegex.test(value)) {
-			// console.error(`${fieldName} should be in the format YYYY-MM-DD`);
+			console.error(`${fieldName} should be in the format YYYY-MM-DD`);
 			return false;
 		}
 		return true;
