@@ -80,4 +80,5 @@ export type PublisherInfo = {
 	foundation_year: string | null;
 	created_at: string;
 	updated_at: string;
+	[key: string]: any;
 };

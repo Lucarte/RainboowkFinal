@@ -2,27 +2,36 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { AuthContext } from "../context/AuthProvider";
 import { useContext, useState } from "react";
-import { SingleBookInfo } from "../types/SingleBookInfo";
-import { HandleEntityExistenceProps } from "../types/EntityExistence";
+import { PublisherInfo, SingleBookInfo } from "../types/SingleBookInfo";
 import AuthorField from "./AuthorField";
 import IllustratorField from "./IllustratorField";
 import PublisherField from "./PublisherField";
 import http from "../utils/http";
+import { AuthorExistenceMessages } from "../components/Messages/AuthorExistenceMessages";
+import { IllustratorExistenceMessages } from "../components/Messages/IllustratorExistenceMessages";
 
 const BookForm = () => {
 	const { user } = useContext(AuthContext);
 
 	// State variables and their corresponding set functions
-	const [isAuthorFormVisible, setAuthorFormVisibility] =
+	const [isAuthorFormVisible, setIsAuthorFormVisible] =
 		useState<boolean>(false);
-	const [isIllustratorFormVisible, setIllustratorFormVisibility] =
+	const [isIllustratorFormVisible, setIsIllustratorFormVisible] =
 		useState<boolean>(false);
-	const [isPublisherFormVisible, setPublisherFormVisibility] =
+	const [isPublisherFormVisible, setIsPublisherFormVisible] =
 		useState<boolean>(false);
+	const [formSubmitted, setFormSubmitted] = useState(false);
 	const [authorId, setAuthorId] = useState<number | null>(null);
 	const [illustratorId, setIllustratorId] = useState<number | null>(null);
 	const [publisherId, setPublisherId] = useState<number | null>(null);
 
+	// Attempt to get rid of the 'no matches...' message after closing AuthorForm
+	const [authorMessage, setAuthorMessage] = useState<string | null>(null);
+	const handleClearMessage = () => {
+		setAuthorMessage(null);
+	};
+
+	// Needs revision, probably add the other fields
 	const form = useForm<SingleBookInfo>({
 		defaultValues: {
 			authors: [{ first_name: "", last_name: "" }],
@@ -31,6 +40,7 @@ const BookForm = () => {
 		},
 	});
 
+	// Form structure
 	const {
 		register,
 		control,
@@ -40,56 +50,26 @@ const BookForm = () => {
 		setError,
 	} = form;
 
+	// Authors FieldArray fn
 	const { fields: authorFields } = useFieldArray({
 		control,
 		name: "authors",
 	});
 
+	// Illustrators FieldArray fn
 	const { fields: illustratorFields } = useFieldArray({
 		control,
 		name: "illustrators",
 	});
 
-	// const handleCheckEntityExistence = async ({
-	// 	entityName,
-	// 	apiEndpoint,
-	// 	handleExistence,
-	// 	openForm,
-	// 	closeForm,
-	// }: HandleEntityExistenceProps): Promise<void> => {
-	// 	try {
-	// 		// Make the existence check request
-	// 		const response = await http.get(
-	// 			`${apiEndpoint}?entityName=${entityName}&index=0`
-	// 		);
-
-	// 		// Assuming the response contains necessary information, extract data
-	// 		const { exists, entityId } = response.data;
-
-	// 		if (exists) {
-	// 			handleExistence(entityId);
-	// 			openForm();
-	// 		} else {
-	// 			closeForm();
-	// 		}
-	// 	} catch (error) {
-	// 		console.error(`Error checking ${entityName} existence:`, error);
-	// 		// Handle errors as needed
-	// 		throw error; // Ensure the error is propagated
-	// 	}
-	// };
-	// BookForm.tsx
-
-	// BookForm.tsx
-
-	// BookForm.tsx
-
+	// Authors Existence Check
 	const handleCheckAuthorExistence = async (
 		authorIndex: number,
 		formData: SingleBookInfo
-	): Promise<number | null> => {
+	) => {
 		try {
 			// Make the existence check request for authors
+			console.log(formData.authors);
 			const response = await http.get(
 				`/api/auth/author_existence_check?first_name=${formData.authors[authorIndex].first_name}&last_name=${formData.authors[authorIndex].last_name}&index=${authorIndex}`
 			);
@@ -99,10 +79,11 @@ const BookForm = () => {
 
 			if (exists) {
 				console.log(`Author exists with id: ${authorId}`);
-				return authorId; // Return the authorId when found
+				setAuthorId(authorId);
+				return authorId; // Update authorId in the state
 			} else {
 				console.log(`No author found`);
-				return null; // Return null when not found
+				setAuthorId(null); // Reset authorId when not found
 			}
 		} catch (error) {
 			console.error(`Error checking author existence:`, error);
@@ -111,56 +92,98 @@ const BookForm = () => {
 		}
 	};
 
-	const handleCheckIllustratorExistence = async (): Promise<number | null> => {
+	// Illustrators Existence Check
+	const handleCheckIllustratorExistence = async (
+		illustratorIndex: number,
+		formData: SingleBookInfo
+	) => {
 		try {
-			await handleCheckEntityExistence({
-				entityName: "Illustrator",
-				apiEndpoint: "/api/auth/illustrator_existence_check",
-				handleExistence: setIllustratorId,
-				openForm: () => setIllustratorFormVisibility(true),
-				closeForm: () => setIllustratorFormVisibility(false),
-			});
-			return illustratorId; // Return the illustratorId after existence check
+			// Make the existence check request for authors
+			console.log(formData.illustrators);
+			const response = await http.get(
+				`/api/auth/illustrator_existence_check?first_name=${formData.illustrators[illustratorIndex].first_name}&last_name=${formData.illustrators[illustratorIndex].last_name}&index=${illustratorIndex}`
+			);
+
+			// Assuming the response contains necessary information, extract data
+			const { exists, illustratorId } = response.data;
+
+			if (exists) {
+				console.log(`Illustrator exists with id: ${illustratorId}`);
+				setIllustratorId(illustratorId);
+				return illustratorId; // Return the authorId when found
+			} else {
+				console.log(`No illustrator found`);
+				setIllustratorId(null); // Return null when not found
+			}
 		} catch (error) {
-			console.error("Error checking illustrator existence:", error);
-			return null;
+			console.error(`Error checking illustrator existence:`, error);
+			// Handle errors as needed
+			throw error; // Ensure the error is propagated
 		}
 	};
 
-	const handleCheckPublisherExistence = async (): Promise<number | null> => {
+	// Publisher Existence Check
+	const handleCheckPublisherExistence = async (
+		publisherIndex: number,
+		formData: SingleBookInfo
+	) => {
 		try {
-			await handleCheckEntityExistence({
-				entityName: "Publisher",
-				apiEndpoint: "/api/auth/publisher_existence_check",
-				handleExistence: setPublisherId,
-				openForm: () => setPublisherFormVisibility(true),
-				closeForm: () => setPublisherFormVisibility(false),
-			});
-			return publisherId; // Return the publisherId after existence check
+			// Make the existence check request for publishers
+			const response = await http.get(
+				`/api/auth/publisher_existence_check?name=${formData.publisher[publisherIndex].name}&index=${publisherIndex}`
+			);
+
+			// Assuming the response contains necessary information, extract data
+			const { exists, publisherId } = response.data;
+
+			if (exists) {
+				console.log(`Publisher exists with id: ${publisherId}`);
+				// You can handle the existence of the publisher here
+				return publisherId; // Return the publisherId when found
+			} else {
+				console.log(`No publisher found`);
+				// You can handle the case when no publisher is found
+				return null; // Return null when not found
+			}
 		} catch (error) {
-			console.error("Error checking publisher existence:", error);
-			return null;
+			console.error(`Error checking publisher existence:`, error);
+			// Handle errors as needed
+			throw error; // Ensure the error is propagated
 		}
 	};
 
+	// Book Form Submission Logik
 	const submitBook = async (formData: SingleBookInfo) => {
 		const userId = user?.id;
 
 		console.log("User ID:", userId);
 		console.log("Book Data:", formData);
 
-		// Get the IDs directly from existence checks
+		// Get author ID directly from existence check
 		const authorId = await handleCheckAuthorExistence(
 			formData.authors[0].first_name,
 			formData.authors[0].last_name
+		);
+
+		// Get illustrator ID directly from existence check
+		const illustratorId = await handleCheckAuthorExistence(
+			formData.illustrators[0].first_name,
+			formData.illustrators[0].last_name
+		);
+		// Get publisher ID directly from existence check
+		const publisherId = await handleCheckPublisherExistence(
+			formData.illustrators[0].name
 		);
 
 		try {
 			await http.get("/sanctum/csrf-cookie");
 
 			// Get the IDs directly from existence checks
-			const authorId = await handleCheckAuthorExistence();
-			const illustratorId = await handleCheckIllustratorExistence();
+			const authorId = await handleCheckAuthorExistence(0, formData.authors[0]);
+			const illustratorId = await handleCheckIllustratorExistence(
+				0,
+				formData.illustrators[0]
+			);
 			const publisherId = await handleCheckPublisherExistence();
 
 			// Use FormData for handling file uploads
@@ -215,6 +238,7 @@ const BookForm = () => {
 		}
 	};
 
+	// JSX RETURN
 	return (
 		<form
 			onSubmit={handleSubmit(submitBook)}
@@ -292,18 +316,25 @@ const BookForm = () => {
 					Author:
 				</label>
 				{authorFields.map((field, authorIndex) => (
-					<AuthorField
-						key={field.id}
-						register={register}
-						errors={errors}
-						authorIndex={authorIndex}
-						getValues={getValues}
-						handleCheckAuthorExistence={handleCheckAuthorExistence}
-						openAuthorForm={() => setAuthorFormVisibility(true)}
-						closeAuthorForm={() => setAuthorFormVisibility(false)}
-						authorId={authorId}
-						isAuthorFormVisible={isAuthorFormVisible}
-					/>
+					<div key={authorIndex}>
+						<AuthorField
+							errors={errors}
+							setIsAuthorFormVisible={setIsAuthorFormVisible}
+							authorIndex={authorIndex}
+							handleCheckAuthorExistence={handleCheckAuthorExistence}
+							authorId={authorId}
+							// closeAuthorForm={() => setIsAuthorFormVisible(false)}
+							// openAuthorForm={() => setIsAuthorFormVisible(true)}
+							isAuthorFormVisible={isAuthorFormVisible}
+							setFormSubmitted={setFormSubmitted}
+							onClearMessage={handleClearMessage}
+						/>
+						<AuthorExistenceMessages
+							formSubmitted={formSubmitted}
+							authorId={authorId}
+							onClearMessage={handleClearMessage}
+						/>
+					</div>
 				))}
 			</div>
 			{/* Illustrator Input */}
@@ -314,17 +345,24 @@ const BookForm = () => {
 					Illustrator:
 				</label>
 				{illustratorFields.map((field, illustratorIndex) => (
-					<IllustratorField
-						key={field.id}
-						register={register}
-						errors={errors}
-						illustratorIndex={illustratorIndex}
-						handleCheckIllustratorExistence={handleCheckIllustratorExistence}
-						openIllustratorForm={() => setIllustratorFormVisibility(true)}
-						closeIllustratorForm={() => setIllustratorFormVisibility(false)}
-						illustratorId={illustratorId}
-						isIllustratorFormVisible={isIllustratorFormVisible}
-					/>
+					<div key={illustratorIndex}>
+						<IllustratorField
+							errors={errors}
+							setIsIllustratorFormVisible={setIsIllustratorFormVisible}
+							illustratorIndex={illustratorIndex}
+							handleCheckIllustratorExistence={handleCheckIllustratorExistence}
+							illustratorId={illustratorId}
+							closeIllustratorForm={() => setIsIllustratorFormVisible(false)}
+							openIllustratorForm={() => setIsIllustratorFormVisible(true)}
+							isIllustratorFormVisible={isIllustratorFormVisible}
+							setFormSubmitted={setFormSubmitted}
+						/>
+						<IllustratorExistenceMessages
+							formSubmitted={formSubmitted}
+							illustratorId={illustratorId}
+							isIllustratorFormVisible={isIllustratorFormVisible}
+						/>
+					</div>
 				))}
 			</div>
 
@@ -337,12 +375,18 @@ const BookForm = () => {
 				</label>
 
 				<PublisherField
-					register={register}
 					errors={errors}
+					setIsPublisherFormVisible={isPublisherFormVisible}
 					publisherIndex={0}
 					handleCheckPublisherExistence={handleCheckPublisherExistence}
-					openPublisherForm={() => setPublisherFormVisibility(true)}
-					closePublisherForm={() => setPublisherFormVisibility(false)}
+					publisherId={publisherId}
+					closePublisherForm={() => setIsPublisherFormVisible(false)}
+					openPublisherForm={() => setIsPublisherFormVisible(true)}
+					isPublisherFormVisible={isPublisherFormVisible}
+					setFormSubmitted={setFormSubmitted}
+				/>
+				<IllustratorExistenceMessages
+					formSubmitted={formSubmitted}
 					publisherId={publisherId}
 					isPublisherFormVisible={isPublisherFormVisible}
 				/>

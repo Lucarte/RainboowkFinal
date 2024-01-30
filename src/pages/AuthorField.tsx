@@ -1,36 +1,45 @@
 import React, { useState } from "react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { SingleBookInfo } from "../types/SingleBookInfo";
 import AuthorForm from "./AuthorForm";
-
-interface AuthorFieldProps {
-	register: UseFormRegister<SingleBookInfo>;
-	errors: FieldErrors<SingleBookInfo>;
-	authorIndex: number;
-	getValues: (name?: string | string[]) => SingleBookInfo;
-	handleCheckAuthorExistence: (
-		authorIndex: number,
-		formData: SingleBookInfo
-	) => Promise<number | null>;
-	openAuthorForm: () => void;
-	closeAuthorForm: () => void;
-	authorId: number | null;
-	isAuthorFormVisible: boolean;
-}
+import { AuthorExistenceMessages } from "../components/Messages/AuthorExistenceMessages";
+import { AuthorFieldProps } from "../types/AuthorFieldProps";
 
 const AuthorField: React.FC<AuthorFieldProps> = ({
-	register,
-	errors,
-	authorIndex,
-	getValues,
 	handleCheckAuthorExistence,
-	openAuthorForm,
-	closeAuthorForm,
+	authorIndex,
 	authorId,
-	isAuthorFormVisible,
+	errors,
+	onClearMessage,
 }) => {
-	// Define formData state
-	const [formData, setFormData] = useState<SingleBookInfo>({});
+	const { register, getValues } = useForm<SingleBookInfo>();
+	const [formSubmitted, setFormSubmitted] = useState<null | boolean>(null);
+	const [isAuthorFormVisible, setIsAuthorFormVisible] = useState<
+		null | boolean
+	>(null);
+	const [authorMessage, setAuthorMessage] = useState<string | null>(null);
+
+	const handleButtonClick = async () => {
+		const formData = getValues();
+		const exists = await handleCheckAuthorExistence(authorIndex, formData);
+
+		if (exists) {
+			console.log(`Great! Author exists already.`);
+			onClearMessage(); // Clear the message when showing the form
+		} else {
+			console.log(`No matches found. Go ahead and add one.`);
+			onClearMessage(); // Clear the message when showing the form
+			setIsAuthorFormVisible(true);
+		}
+
+		setFormSubmitted(true);
+	};
+
+	// Close the AuthorForm && clear message
+	const closeAuthorForm = () => {
+		setAuthorMessage(null);
+		setIsAuthorFormVisible(false);
+	};
 	return (
 		<div key={authorIndex} className='flex flex-col gap-4'>
 			{/* ... (First Name and Last Name inputs) ... */}
@@ -76,41 +85,25 @@ const AuthorField: React.FC<AuthorFieldProps> = ({
 					)}
 				</div>
 			</div>
+
 			<button
 				className='text-indigo-500 bg-white border-2 border-indigo-500 rounded-l-full hover:bg-indigo-700 focus:outline-none'
 				type='button'
-				onClick={async () => {
-					const exists = await handleCheckAuthorExistence(
-						authorIndex,
-						formData
-					);
-
-					setFormChecked(true); // Set the flag after form check
-
-					if (exists !== null) {
-						console.log(`No matches found. Go ahead and add one.`);
-						// Open the form when the author doesn't exist
-						openAuthorForm();
-					} else {
-						console.log(`Great! Author exists already.`);
-					}
-				}}>
+				onClick={handleButtonClick}>
 				Check Author
 			</button>
 
-			{(!authorId || isAuthorFormVisible) && (
-				<div className='mt-2 text-sm text-right text-cyan-500'>
-					No matches found. Go ahead and add one.
-				</div>
-			)}
+			{/* Extracted component for author existence messages */}
+			<AuthorExistenceMessages
+				formSubmitted={formSubmitted}
+				authorId={authorId}
+				onClearMessage={onClearMessage}
+			/>
 
-			{authorId && !isAuthorFormVisible && (
-				<p className='mt-2 text-sm text-right text-slate-500'>
-					Great! Author exists already, and you need not enter their details!
-				</p>
+			{isAuthorFormVisible && (
+				<AuthorForm onCloseForm={closeAuthorForm} />
+				// <AuthorForm onCloseForm={() => setIsAuthorFormVisible(false)} />
 			)}
-
-			{isAuthorFormVisible && <AuthorForm onCloseForm={closeAuthorForm} />}
 		</div>
 	);
 };

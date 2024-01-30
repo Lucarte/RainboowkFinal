@@ -1,32 +1,50 @@
-// IllustratorField.tsx
-import React from "react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { SingleBookInfo } from "../types/SingleBookInfo";
 import IllustratorForm from "./IllustratorForm";
-
-interface IllustratorFieldProps {
-	register: UseFormRegister<SingleBookInfo>;
-	errors: FieldErrors<SingleBookInfo>;
-	illustratorIndex: number;
-	handleCheckIllustratorExistence: (
-		illustratorIndex: number
-	) => Promise<number | null>;
-	openIllustratorForm: () => void;
-	closeIllustratorForm: () => void;
-	illustratorId: number | null;
-	isIllustratorFormVisible: boolean;
-}
+import { IllustratorFieldProps } from "../types/IllustratorFieldProps";
+import { IllustratorExistenceMessages } from "../components/Messages/IllustratorExistenceMessages";
 
 const IllustratorField: React.FC<IllustratorFieldProps> = ({
-	register,
-	errors,
-	illustratorIndex,
 	handleCheckIllustratorExistence,
-	openIllustratorForm,
-	closeIllustratorForm,
+	illustratorIndex,
 	illustratorId,
-	isIllustratorFormVisible,
+	errors,
 }) => {
+	const { register, getValues } = useForm<SingleBookInfo>();
+	const [formSubmitted, setFormSubmitted] = useState<null | boolean>(null);
+	const [isIllustratorFormVisible, setIsIllustratorFormVisible] = useState<
+		null | boolean
+	>(null);
+	const openIllustratorForm = () => {
+		console.log("Opening illustrator form");
+		setIsIllustratorFormVisible(true);
+	};
+
+	const closeIllustratorForm = () => {
+		setIsIllustratorFormVisible(false);
+	};
+
+	const handleButtonClick = async () => {
+		const formData = getValues();
+		const exists = await handleCheckIllustratorExistence(
+			illustratorIndex,
+			formData
+		);
+
+		console.log("exists:", exists);
+		console.log("isIllustratorFormVisible:", isIllustratorFormVisible);
+
+		if (exists) {
+			console.log(`Great! Illustrator exists already.`);
+			closeIllustratorForm();
+		} else {
+			console.log(`No matches found. Go ahead and add one.`);
+			openIllustratorForm();
+		}
+
+		setFormSubmitted(true);
+	};
 	return (
 		<div key={illustratorIndex} className='flex flex-col gap-4'>
 			{/* ... (existing code for First Name and Last Name inputs) ... */}
@@ -72,36 +90,20 @@ const IllustratorField: React.FC<IllustratorFieldProps> = ({
 					)}
 				</div>
 			</div>
+
 			<button
 				className='text-indigo-500 bg-white border-2 border-indigo-500 rounded-l-full hover:bg-indigo-700 focus:outline-none'
 				type='button'
-				onClick={async () => {
-					const exists = await handleCheckIllustratorExistence(
-						illustratorIndex
-					);
-
-					if (exists) {
-						console.log(`Great! Illustrator exists already.`);
-					} else {
-						console.log(`No matches found. Go ahead and add one.`);
-						openIllustratorForm();
-					}
-				}}>
+				onClick={handleButtonClick}>
 				Check Illustrator
 			</button>
 
-			{!illustratorId && isIllustratorFormVisible && (
-				<div className='mt-2 text-sm text-right text-cyan-500'>
-					No matches found. Go ahead and add one.
-				</div>
-			)}
-
-			{illustratorId && !isIllustratorFormVisible && (
-				<p className='mt-2 text-sm text-right text-slate-500'>
-					Great! Illustrator exists already, and you need not enter their
-					details!
-				</p>
-			)}
+			{/* Extracted component for Illustrator existence messages */}
+			<IllustratorExistenceMessages
+				formSubmitted={formSubmitted}
+				illustratorId={illustratorId}
+				isIllustratorFormVisible={isIllustratorFormVisible}
+			/>
 
 			{isIllustratorFormVisible && (
 				<IllustratorForm onCloseForm={closeIllustratorForm} />
