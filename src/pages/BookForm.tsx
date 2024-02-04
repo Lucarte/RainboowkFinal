@@ -1,7 +1,7 @@
 // import { useHistory } from "react-router-dom";
 import { useForm, useFieldArray } from "react-hook-form";
 import { AuthContext } from "../context/AuthProvider";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { PublisherInfo, SingleBookInfo } from "../types/SingleBookInfo";
 import AuthorField from "./AuthorField";
 import IllustratorField from "./IllustratorField";
@@ -9,6 +9,8 @@ import PublisherField from "./PublisherField";
 import http from "../utils/http";
 import { AuthorExistenceMessages } from "../components/Messages/AuthorExistenceMessages";
 import { IllustratorExistenceMessages } from "../components/Messages/IllustratorExistenceMessages";
+import { AuthorInfo } from "../types/SingleBookInfo";
+import AuthorForm from "./AuthorForm";
 
 const BookForm = () => {
 	const { user } = useContext(AuthContext);
@@ -31,12 +33,91 @@ const BookForm = () => {
 		setAuthorMessage(null);
 	};
 
-	// Needs revision, probably add the other fields
+	const [isAuthorFormOpen, setIsAuthorFormOpen] = useState(false);
+
+	const handleAddNewAuthorClick = async () => {
+		// Toggle the state to open/close the AuthorForm
+		setIsAuthorFormOpen((prevIsOpen) => !prevIsOpen);
+
+		// Fetch the updated list of authors after adding a new author
+		await fetchData();
+	};
+
+	// Initialize state to keep track of author IDs
+	const [previousAuthorIds, setPreviousAuthorIds] = useState<number[]>([]);
+	const [existingAuthors, setExistingAuthors] = useState<AuthorInfo[]>([]);
+
+	const fetchData = async () => {
+		try {
+			const apiResponse = await http.get("/api/authors");
+
+			if (Array.isArray(apiResponse.data.Authors)) {
+				// Extract author IDs and update the state
+				const authorIds = apiResponse.data.Authors.map(
+					(author: AuthorInfo) => author.id
+				);
+				setPreviousAuthorIds(authorIds);
+
+				// Update the state with the array of authors directly
+				setExistingAuthors(apiResponse.data.Authors);
+			} else {
+				console.error("Invalid data format:", apiResponse.data);
+			}
+		} catch (error) {
+			console.error("Error fetching data:", error);
+		}
+	};
+	const [authorData, setAuthorData] = useState<AuthorInfo>({
+		first_name: "",
+		last_name: "",
+	});
+
+	// This is just an example, you should replace it with your actual API endpoint or data fetching logic
+	const fetchAuthorDetails = async (slug: string) => {
+		try {
+			const response = await http.get(`/api/author/${slug}`);
+			return response.data; // Assuming the response contains the author details
+		} catch (error) {
+			throw error; // Handle the error as needed
+		}
+	};
+
+	// In your BookForm or wherever you need to fetch author details
+	const handleAuthorAdded = async (newAuthorId: number) => {
+		try {
+			// Assuming your AuthorInfo object has properties first_name and last_name
+			const newAuthorSlug = `${authorData.first_name}_${authorData.last_name}`;
+
+			// Fetch the details of the newly added author
+			const authorDetails = await fetchAuthorDetails(newAuthorSlug);
+
+			// Now you can use the authorDetails in your code
+			console.log("Author details:", authorDetails);
+
+			setSelectedAuthorId(newAuthorId);
+		} catch (error) {
+			console.error("Error fetching author details:", error);
+			// Handle the error as needed
+		}
+	};
+
+	// Call the fetchData function to fetch data when the component mounts
+	useEffect(() => {
+		fetchData();
+	}, []); // The empty dependency array ensures that it only runs once when the component mounts
+
+	// Instance of useForm
 	const form = useForm<SingleBookInfo>({
 		defaultValues: {
-			authors: [{ first_name: "", last_name: "" }],
-			illustrators: [{ first_name: "", last_name: "" }],
-			publisher: { name: "" }, // Initialize the publisher field
+			ISBN: "",
+			title: "",
+			description: "",
+			print_date: "",
+			original_language: "",
+			author_id: 0,
+			illustrator_id: 0,
+			publisher_id: 0,
+			image_path: undefined,
 		},
 	});
 
@@ -69,7 +150,8 @@ const BookForm = () => {
 	) => {
 		try {
 			// Make the existence check request for authors
-			console.log(formData.authors);
+			console.log(form.authors);
+			form.authors = formData.authors;
 			const response = await http.get(
 				`/api/auth/author_existence_check?first_name=${formData.authors[authorIndex].first_name}&last_name=${formData.authors[authorIndex].last_name}&index=${authorIndex}`
 			);
@@ -138,6 +220,7 @@ const BookForm = () => {
 
 			if (exists) {
 				console.log(`Publisher exists with id: ${publisherId}`);
+				setPublisherId(publisherId);
 				// You can handle the existence of the publisher here
 				return publisherId; // Return the publisherId when found
 			} else {
@@ -153,38 +236,17 @@ const BookForm = () => {
 	};
 
 	// Book Form Submission Logik
-	const submitBook = async (formData: SingleBookInfo) => {
+	const submitBook = async (formData: SingleBookInfo, authorId: number) => {
 		const userId = user?.id;
 
-		console.log("User ID:", userId);
-		console.log("Book Data:", formData);
-
-		// Get author ID directly from existence check
-		const authorId = await handleCheckAuthorExistence(
-			formData.authors[0].first_name,
-			formData.authors[0].last_name
-		);
-
-		// Get illustrator ID directly from existence check
-		const illustratorId = await handleCheckAuthorExistence(
-			formData.illustrators[0].first_name,
-			formData.illustrators[0].last_name
-		);
-		// Get publisher ID directly from existence check
-		const publisherId = await handleCheckPublisherExistence(
-			formData.illustrators[0].name
-		);
+		// console.log("User ID:", userId);
+		// console.log("Book Data:", formData);
+		// console.log("Author ID:", authorId);
+		// console.log("Values:", getValues());
+		// console.log("Form:", form);
 
 		try {
 			await http.get("/sanctum/csrf-cookie");
-
-			// Get the IDs directly from existence checks
-			const authorId = await handleCheckAuthorExistence(0, formData.authors[0]);
-			const illustratorId = await handleCheckIllustratorExistence(
-				0,
-				formData.illustrators[0]
-			);
-			const publisherId = await handleCheckPublisherExistence();
 
 			// Use FormData for handling file uploads
 			const formDataToSend = new FormData();
@@ -237,6 +299,8 @@ const BookForm = () => {
 			}
 		}
 	};
+
+	const [selectedAuthorId, setSelectedAuthorId] = useState<number | null>(null);
 
 	// JSX RETURN
 	return (
@@ -309,34 +373,55 @@ const BookForm = () => {
 				</p>
 			</div>
 			{/* Author Input */}
-			<div className='mb-4 bg-slate-300'>
+			<div className='mb-4'>
 				<label
 					className='block mb-2 text-sm font-bold tracking-wider text-right text-indigo-500'
-					htmlFor='author'>
+					htmlFor='author_id'>
 					Author:
 				</label>
-				{authorFields.map((field, authorIndex) => (
-					<div key={authorIndex}>
-						<AuthorField
-							errors={errors}
-							setIsAuthorFormVisible={setIsAuthorFormVisible}
-							authorIndex={authorIndex}
-							handleCheckAuthorExistence={handleCheckAuthorExistence}
-							authorId={authorId}
-							// closeAuthorForm={() => setIsAuthorFormVisible(false)}
-							// openAuthorForm={() => setIsAuthorFormVisible(true)}
-							isAuthorFormVisible={isAuthorFormVisible}
-							setFormSubmitted={setFormSubmitted}
-							onClearMessage={handleClearMessage}
-						/>
-						<AuthorExistenceMessages
-							formSubmitted={formSubmitted}
-							authorId={authorId}
-							onClearMessage={handleClearMessage}
-						/>
-					</div>
-				))}
+				<div className='relative'>
+					<select
+						{...register("author_id", {
+							required: "Please select an author",
+						})}
+						className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-indigo-700'
+						aria-invalid={errors.author_id ? "true" : "false"}
+						value={selectedAuthorId ?? ""}
+						onChange={(e) => setSelectedAuthorId(Number(e.target.value))}
+
+						// onChange={handleAuthorSelection}
+					>
+						<option value='' disabled>
+							Select an author
+						</option>
+						{existingAuthors.map((author) => (
+							<option key={author.id} value={author.id}>
+								{author.fullname}
+							</option>
+						))}
+					</select>
+
+					<button
+						type='button'
+						className='absolute top-0 right-0 px-2 py-3 text-white bg-indigo-300 rounded-r-lg'
+						onClick={handleAddNewAuthorClick}>
+						Add New
+					</button>
+				</div>
+
+				{/* Render AuthorForm conditionally based on the state */}
+				{isAuthorFormOpen && (
+					<AuthorForm
+						onCloseForm={() => setIsAuthorFormOpen(false)}
+						onAuthorAdded={handleAuthorAdded}
+					/>
+				)}
+
+				<p className='mt-2 text-sm text-right text-cyan-500'>
+					{errors.author_id?.message}
+				</p>
 			</div>
+
 			{/* Illustrator Input */}
 			<div className='mb-4 bg-slate-300'>
 				<label

@@ -1,13 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import http from "../utils/http";
 import { AuthorInfo } from "../types/AuthorInfo";
 
 type AuthorFormProps = {
 	onCloseForm: () => void;
+	onAuthorAdded: (newAuthorId: number) => void;
+	onAuthorDataChanged: AuthorInfo;
 };
 
-const AuthorForm: React.FC<AuthorFormProps> = ({ onCloseForm }) => {
+const AuthorForm: React.FC<AuthorFormProps> = ({
+	onCloseForm,
+	onAuthorAdded,
+	onAuthorDataChanged,
+}) => {
 	const [authorData, setAuthorData] = useState<AuthorInfo>({
+		id: 0,
 		first_name: "",
 		last_name: "",
 		date_of_birth: "",
@@ -21,7 +28,12 @@ const AuthorForm: React.FC<AuthorFormProps> = ({ onCloseForm }) => {
 
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [submitting, setSubmitting] = useState(false);
-	const saveAuthorData = async (data: AuthorInfo) => {
+
+	const [selectedAuthorId, setSelectedAuthorId] = useState(null);
+
+	const saveAuthorData = async (
+		data: AuthorInfo
+	): Promise<number | { errorCode: string; errorMessage: string } | void> => {
 		try {
 			// Request CSRF token
 			await http.get("/sanctum/csrf-cookie");
@@ -29,9 +41,17 @@ const AuthorForm: React.FC<AuthorFormProps> = ({ onCloseForm }) => {
 			// Make the author creation request
 			const response = await http.post("/api/auth/create_author", data);
 
+			// Obtain the new author ID from the response
+			const newAuthorId = response.data.newAuthorId;
+
+			// Call onAuthorAdded with the new author ID
+			onAuthorAdded(newAuthorId);
+
 			// Handle successful response
 			console.log("Author created successfully:", response.data);
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+			// Return the new author ID
+			return newAuthorId;
 		} catch (error: any) {
 			// Handle error
 			console.error("Error submitting Author Form:", error);
@@ -40,6 +60,12 @@ const AuthorForm: React.FC<AuthorFormProps> = ({ onCloseForm }) => {
 			if (error.response) {
 				console.log("Error response data:", error.response.data);
 			}
+
+			// Return a detailed error object
+			return {
+				errorCode: "YOUR_ERROR_CODE",
+				errorMessage: "A detailed error message",
+			};
 		}
 	};
 
@@ -91,12 +117,20 @@ const AuthorForm: React.FC<AuthorFormProps> = ({ onCloseForm }) => {
 			}
 
 			// Call your API endpoint to save the author data
-			await saveAuthorData(authorData);
-			alert("Author data successfully saved!");
-			onCloseForm();
+			const newAuthorId = await saveAuthorData(authorData);
+
+			// Check the newAuthorId value and handle it appropriately
+			if (typeof newAuthorId === "number") {
+				// Handle the case where the author was successfully added
+				alert("Author data successfully saved!");
+				onCloseForm();
+			} else {
+				// Handle the case where there's an error during author creation
+				console.error("An error occurred while submitting the form.");
+			}
 		} catch (error) {
 			console.error("Error submitting Author Form:", error);
-			// Handle error appropriately, e.g., show an error message to the user
+			// Handle other errors appropriately, e.g., show an error message to the user
 			setErrors({
 				submit:
 					"An error occurred while submitting the form. Please try again.",
@@ -115,6 +149,11 @@ const AuthorForm: React.FC<AuthorFormProps> = ({ onCloseForm }) => {
 		}
 		return true;
 	};
+
+	useEffect(() => {
+		// Callback to notify the parent component (BookForm) about changes in authorData
+		onAuthorDataChanged(authorData);
+	}, [authorData, onAuthorDataChanged]);
 
 	const isValidEmail = (value: string, fieldName: string): boolean => {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

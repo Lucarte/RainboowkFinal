@@ -7,6 +7,7 @@ import { AuthorFieldProps } from "../types/AuthorFieldProps";
 
 const AuthorField: React.FC<AuthorFieldProps> = ({
 	handleCheckAuthorExistence,
+	// formData,
 	authorIndex,
 	authorId,
 	errors,

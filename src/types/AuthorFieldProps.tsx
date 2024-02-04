@@ -2,6 +2,7 @@ import { FieldErrors } from "react-hook-form";
 import { SingleBookInfo } from "./SingleBookInfo";
 
 export interface AuthorFieldProps {
+	formData?: SingleBookInfo;
 	errors: FieldErrors<SingleBookInfo>;
 	// openAuthorForm: () => void;
 	// closeAuthorForm: () => void;
